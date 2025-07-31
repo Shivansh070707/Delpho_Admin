@@ -12,6 +12,7 @@
   "dependencies": {
     "@rainbow-me/rainbowkit": "^2.2.8",
     "@tailwindcss/vite": "^4.1.11",
+    "@tanstack/react-query": "^5.83.0",
     "@types/react-router-dom": "^5.3.3",
     "framer-motion": "^12.23.7",
     "react": "^19.1.0",
