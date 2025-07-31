@@ -1,5 +1,6 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { ConnectWalletButton } from "./buttons/ConnectWalletButton";
+
 
 interface TopNavProps {
   title?: string;
@@ -11,12 +12,7 @@ const TopNav: React.FC<TopNavProps> = ({ title, children }) => (
     {title && <h1 className="text-4xl font-bold">{title}</h1>}
     <div className="flex items-center gap-4">
       {children}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        className="px-6 py-2 rounded-full border border-[#E6FFF6] text-[#E6FFF6] hover:bg-[#1A2323] transition"
-      >
-        Connect Wallet
-      </motion.button>
+      <ConnectWalletButton />
     </div>
   </div>
 );
