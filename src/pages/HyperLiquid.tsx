@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import HomeSidebar from "../components/HomeSidebar";
 import TopNav from "../components/TopNav";
 import { motion } from "framer-motion";
+import AdminTradeExecutor from "../components/AdminTradeExecutor";
 
 const TABS = [
   "Balances",
@@ -523,6 +524,11 @@ const HyperLiquid: React.FC = () => {
       <HomeSidebar />
       <main className="flex-1 p-4 md:p-8 overflow-y-auto">
         <TopNav title="HyperLiquid Dashboard" />
+
+        <div className="my-8">
+          <AdminTradeExecutor />
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
