@@ -23,7 +23,7 @@ interface AdminTradeExecutorProps {
 const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
   className = "",
 }) => {
-  const [currentStep, setCurrentStep] = useState(3);
+  const [currentStep, setCurrentStep] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [stepData, setStepData] = useState<StepData>({
     isBuy: true,
@@ -67,10 +67,8 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
   ];
 
   const handleStepClick = (stepId: number) => {
-    if (stepId <= currentStep) {
-      setCurrentStep(stepId);
-      setIsModalOpen(true);
-    }
+    setCurrentStep(stepId);
+    setIsModalOpen(true);
   };
 
   const calculateMinOrderValue = (price: number) => {
@@ -184,10 +182,10 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
           <div className="flex flex-col items-center">
             <motion.div
               className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold cursor-pointer transition-all ${step.id === currentStep
-                ? "bg-[#00FFB2] text-[#0B1212]"
-                : step.completed
                   ? "bg-[#00FFB2] text-[#0B1212]"
-                  : "bg-[#1A2323] text-[#A3B8B0]"
+                  : step.completed
+                    ? "bg-[#00FFB2] text-[#0B1212]"
+                    : "bg-[#1A2323] text-[#A3B8B0]"
                 }`}
               onClick={() => handleStepClick(step.id)}
               whileHover={{ scale: 1.05 }}
