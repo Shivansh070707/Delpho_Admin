@@ -43,7 +43,7 @@ const HyperLiquid: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
 
-  const hyperliquidClient = createHyperliquidClient({ testnet: true });
+  const hyperliquidClient = createHyperliquidClient({ testnet: false });
    useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
