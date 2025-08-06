@@ -3,8 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { FaTachometerAlt, FaChartBar, FaLock } from "react-icons/fa";
 
 const navItems = [
-  { label: "HyperLend", icon: <FaTachometerAlt />, path: "/hyperlend" },
-  { label: "HyperLiquid", icon: <FaChartBar />, path: "/hyperliquid" },
+  { label: "HyperEVM", icon: <FaTachometerAlt />, path: "/hyperlend" },
+  { label: "HyperCore", icon: <FaChartBar />, path: "/hyperliquid" },
   { label: "Delpho Vault", icon: <FaLock />, path: "/vault" },
 ];
 

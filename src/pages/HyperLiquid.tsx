@@ -523,7 +523,7 @@ const HyperLiquid: React.FC = () => {
     <div className="min-h-screen flex bg-[#101616] text-[#E6FFF6]">
       <HomeSidebar />
       <main className="flex-1 p-4 md:p-8 overflow-y-auto">
-        <TopNav title="HyperLiquid Dashboard" />
+        <TopNav title="HyperCore Dashboard" />
 
         <div className="my-8">
           <AdminTradeExecutor />
