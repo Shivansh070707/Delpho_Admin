@@ -8,6 +8,8 @@ import {
   TOKEN_IDS,
   MARKET_IDS,
   CORE_WRITER_ABI,
+  EXECUTOR_ADDRESS,
+  EXECUTOR_ABI
 } from "../config/constants";
 import { waitForTransactionReceipt } from "viem/actions";
 
@@ -33,17 +35,11 @@ export function useCoreActions() {
     async (amount: bigint, toPerp: boolean) => {
       if (!walletClient || !address) throw new Error("Wallet not connected");
 
-      const rawAction = buildAction(
-        ACTION_IDS.USDC_CLASS_TRANSFER,
-        "uint64 ntl, bool toPerp",
-        [amount, toPerp]
-      );
-
       const tx = await walletClient.writeContract({
-        address: CORE_WRITER_ADDRESS,
-        abi: CORE_WRITER_ABI,
-        functionName: "sendRawAction",
-        args: [rawAction],
+        address: EXECUTOR_ADDRESS,
+        abi: EXECUTOR_ABI,
+        functionName: "transferUSDCFromSpotToPerp",
+        args: [amount, toPerp],
         account: address,
       });
       await waitForTransactionReceipt(walletClient, {
@@ -51,7 +47,7 @@ export function useCoreActions() {
       });
       return tx;
     },
-    [walletClient, address, buildAction]
+    [walletClient, address]
   );
 
   const createOrder = useCallback(
@@ -59,54 +55,69 @@ export function useCoreActions() {
       marketId: number,
       isBuy: boolean,
       limitPrice: bigint,
-      size: bigint,
-      options: {
-        reduceOnly?: boolean;
-        timeInForce?: number;
-        orderId?: bigint;
-      } = {}
+      size: bigint
     ) => {
       if (!walletClient || !address) throw new Error("Wallet not connected");
 
-      const rawAction = buildAction(
-        ACTION_IDS.LIMIT_ORDER,
-        "uint32 assetId, bool isBuy, uint64 limitPx, uint64 sz, bool reduceOnly, uint8 tif, uint64 cloid",
-        [
-          marketId,
-          isBuy,
-          limitPrice,
-          size,
-          options.reduceOnly ?? false,
-          options.timeInForce ?? 2,
-          options.orderId ?? 0n,
-        ]
-      );
-      const tx = await walletClient.writeContract({
-        address: CORE_WRITER_ADDRESS,
-        abi: CORE_WRITER_ABI,
-        functionName: "sendRawAction",
-        args: [rawAction],
-        account: address,
-      });
-      await waitForTransactionReceipt(walletClient, {
-        hash: tx as `0x${string}`,
-      });
+      // For HYPE perp orders, use the executor contract
+      if (marketId === MARKET_IDS.HYPE_PERP) {
+        const tx = await walletClient.writeContract({
+          address: EXECUTOR_ADDRESS,
+          abi: EXECUTOR_ABI,
+          functionName: "openHypeShort",
+          args: [isBuy, limitPrice, size],
+          account: address,
+        });
+        await waitForTransactionReceipt(walletClient, {
+          hash: tx as `0x${string}`,
+        });
+        return tx;
+      }
 
-      return tx;
+   
+      if (marketId === MARKET_IDS.USDT_USDC_SPOT) {
+        const tx = await walletClient.writeContract({
+          address: EXECUTOR_ADDRESS,
+          abi: EXECUTOR_ABI,
+          functionName: "swapUSDT2USDC",
+          args: [isBuy, limitPrice, size],
+          account: address,
+        });
+        await waitForTransactionReceipt(walletClient, {
+          hash: tx as `0x${string}`,
+        });
+        return tx;
+      }
+  
     },
-    [walletClient, address, buildAction]
+    [walletClient, address]
   );
 
   const transferToEVM = useCallback(
     async (recipient: `0x${string}`, tokenId: bigint, amount: bigint) => {
       if (!walletClient || !address) throw new Error("Wallet not connected");
 
+      // For USDT transfers, use the executor's transfer function
+      if (tokenId === TOKEN_IDS.USDT) {
+        const tx = await walletClient.writeContract({
+          address: EXECUTOR_ADDRESS,
+          abi: EXECUTOR_ABI,
+          functionName: "transferUSDT2Core",
+          args: [amount],
+          account: address,
+        });
+        await waitForTransactionReceipt(walletClient, {
+          hash: tx as `0x${string}`,
+        });
+        return tx;
+      }
+
+      // Fallback to direct CoreWriter call for other tokens
       const rawAction = buildAction(
         ACTION_IDS.SPOT_SEND,
         "address recipient, uint64 tokenId, uint64 weiAmount",
         [recipient, tokenId, amount]
       );
-
       const tx = await walletClient.writeContract({
         address: CORE_WRITER_ADDRESS,
         abi: CORE_WRITER_ABI,
@@ -128,6 +139,7 @@ export function useCoreActions() {
     },
     [transferUSDC]
   );
+
   const transferUSDCToPerp = useCallback(
     async (amount: bigint) => {
       return transferUSDC(amount, true);
