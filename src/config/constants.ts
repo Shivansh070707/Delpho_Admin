@@ -2,6 +2,7 @@ export const CORE_WRITER_ADDRESS =
   "0x3333333333333333333333333333333333333333" as const;
 export const EXECUTOR_ADDRESS =
   "0x2f0Daf6529e5c2109E46942f0b9b09E827D2656B" as const;
+  
 export const ENCODING_VERSION = 1;
 export const ACTION_IDS = {
   USDC_CLASS_TRANSFER: 7,
@@ -17,6 +18,10 @@ export const MARKET_IDS = {
   USDT_USDC_SPOT: 11115,
   HYPE_PERP: 135,
 } as const;
+
+export const COIN_NAME_MAP: Record<string, string> = {
+  '@1115': 'USDT', 
+};
 
 export const CORE_WRITER_ABI = [
   {
