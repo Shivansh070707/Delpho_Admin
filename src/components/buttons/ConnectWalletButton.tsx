@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useDispatch } from "react-redux";
+import { connect, disconnect } from "../../features/wallet/walletSlice";
 
 export const ConnectWalletButton = () => {
+  const dispatch = useDispatch();
   return (
     <ConnectButton.Custom>
       {({
@@ -13,21 +16,28 @@ export const ConnectWalletButton = () => {
         authenticationStatus,
         mounted,
       }) => {
-        const ready = mounted && authenticationStatus !== 'loading';
+        const ready = mounted && authenticationStatus !== "loading";
         const connected =
           ready &&
           account &&
           chain &&
-          (!authenticationStatus || authenticationStatus === 'authenticated');
+          (!authenticationStatus || authenticationStatus === "authenticated");
+
+        // Sync Redux wallet state
+        if (connected) {
+          dispatch(connect(account.address));
+        } else {
+          dispatch(disconnect());
+        }
 
         return (
           <div
             {...(!ready && {
-              'aria-hidden': true,
-              'style': {
+              "aria-hidden": true,
+              style: {
                 opacity: 0,
-                pointerEvents: 'none',
-                userSelect: 'none',
+                pointerEvents: "none",
+                userSelect: "none",
               },
             })}
           >
@@ -72,7 +82,7 @@ export const ConnectWalletButton = () => {
                       >
                         {chain.iconUrl && (
                           <img
-                            alt={chain.name ?? 'Chain icon'}
+                            alt={chain.name ?? "Chain icon"}
                             src={chain.iconUrl}
                             className="w-full h-full"
                           />
