@@ -4,14 +4,18 @@ import MetricsSection from "../components/HyperLend/MetricsSection";
 import CollateralNotice from "../components/HyperLend/CollateralNotice";
 import SupplyBorrowSection from "../components/HyperLend/SupplyBorrowSection";
 import AdminTradeExecutor from "../components/AdminTradeExecutor";
+import LoopCycleExecutor from "../components/LoopCycleExecutor";
 
 const HyperLend: React.FC = () => {
   return (
     <div className="min-h-screen flex bg-[#101616] text-[#E6FFF6]">
       <HomeSidebar />
       <main className="flex-1 p-4 md:p-8 overflow-y-auto">
-        <TopNav title="HyperLend Dashboard" />
+        <TopNav title="HyperEVM Dashboard" />
 
+        <div className="my-8">
+          <LoopCycleExecutor />
+        </div>
         <div className="my-8">
           <AdminTradeExecutor />
         </div>
