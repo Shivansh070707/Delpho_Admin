@@ -2,7 +2,7 @@ import React from "react";
 import HomeSidebar from "../components/HomeSidebar";
 import TopNav from "../components/TopNav";
 import { motion } from "framer-motion";
-import AdminTradeExecutor from "../components/AdminTradeExecutor";
+
 
 const VAULT_METRICS = [
   {
@@ -21,10 +21,7 @@ const VaultDashboard: React.FC = () => {
       <main className="flex-1 p-4 md:p-8 overflow-y-auto">
         <TopNav title="Delpho Vault Dashboard" />
 
-        <div className="my-8">
-          <AdminTradeExecutor />
-        </div>
-
+       
 
         <div className="bg-[#0B1212] rounded-xl p-0 min-h-[200px] overflow-x-auto">
           <table className="min-w-full text-left">
