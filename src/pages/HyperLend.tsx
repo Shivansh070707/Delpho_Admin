@@ -3,7 +3,6 @@ import TopNav from "../components/TopNav";
 import MetricsSection from "../components/HyperLend/MetricsSection";
 import CollateralNotice from "../components/HyperLend/CollateralNotice";
 import SupplyBorrowSection from "../components/HyperLend/SupplyBorrowSection";
-import AdminTradeExecutor from "../components/AdminTradeExecutor";
 import LoopCycleExecutor from "../components/LoopCycleExecutor";
 
 const HyperLend: React.FC = () => {
@@ -16,9 +15,7 @@ const HyperLend: React.FC = () => {
         <div className="my-8">
           <LoopCycleExecutor />
         </div>
-        <div className="my-8">
-          <AdminTradeExecutor />
-        </div>
+       
 
         <MetricsSection
           currentBalance="$0"

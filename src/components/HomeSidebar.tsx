@@ -4,7 +4,7 @@ import { FaTachometerAlt, FaChartBar, FaLock } from "react-icons/fa";
 
 const navItems = [
   { label: "HyperEVM", icon: <FaTachometerAlt />, path: "/hyperlend" },
-  { label: "HyperCall", icon: <FaChartBar />, path: "/hyperliquid" },
+  { label: "HyperCore", icon: <FaChartBar />, path: "/hyperliquid" },
   { label: "Delpho Vault", icon: <FaLock />, path: "/vault" },
 ];
 
