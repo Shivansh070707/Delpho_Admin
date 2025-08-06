@@ -17,23 +17,23 @@ export type FrontendOpenOrders = {
 }[];
 
 const emptyClearinghouseState: ClearinghouseState = {
-        assetPositions: [],
-        crossMaintenanceMarginUsed: "0",
-        crossMarginSummary: {
-            accountValue: "0",
-            totalMarginUsed: "0",
-            totalNtlPos: "0",
-            totalRawUsd: "0"
-        },
-        marginSummary: {
-            accountValue: "0",
-            totalMarginUsed: "0",
-            totalNtlPos: "0",
-            totalRawUsd: "0"
-        },
-        time: 0,
-        withdrawable: "0"
-    };
+    assetPositions: [],
+    crossMaintenanceMarginUsed: "0",
+    crossMarginSummary: {
+        accountValue: "0",
+        totalMarginUsed: "0",
+        totalNtlPos: "0",
+        totalRawUsd: "0"
+    },
+    marginSummary: {
+        accountValue: "0",
+        totalMarginUsed: "0",
+        totalNtlPos: "0",
+        totalRawUsd: "0"
+    },
+    time: 0,
+    withdrawable: "0"
+};
 
 
 export interface HistoricalOrder {
@@ -264,7 +264,7 @@ export function createHyperliquidClient(options: { testnet?: boolean } = {}) {
                     type: 'frontendOpenOrders',
                     user: userAddress,
                 });
-                console.log(response, 'responseresponse');
+
 
                 return response.data;
             } catch (error) {
@@ -283,7 +283,7 @@ export function createHyperliquidClient(options: { testnet?: boolean } = {}) {
                     type: 'spotClearinghouseState',
                     user: userAddress,
                 });
-                console.log(response, 'response');
+
 
                 return response.data || { balances: [] };
             } catch (error) {
@@ -425,15 +425,15 @@ export function createHyperliquidClient(options: { testnet?: boolean } = {}) {
          * Get all perpetual positions for a user (enhanced version)
         **/
 
-        async getPerpPositions(userAddress: string): Promise<ClearinghouseState > {
+        async getPerpPositions(userAddress: string): Promise<ClearinghouseState> {
             try {
                 const response = await api.post('/info', {
                     type: 'clearinghouseState',
                     user: userAddress,
                 });
-                console.log(userAddress, 'userAddress');
 
-                console.log(response.data, 'responseclearinghouseState');
+
+
 
                 return response.data || [];
             } catch (error) {
@@ -478,7 +478,7 @@ export function createHyperliquidClient(options: { testnet?: boolean } = {}) {
 
 
                 const response = await api.post('/info', payload);
-                console.log(response, 'responsetrade histor');
+
 
                 return response.data || [];
             } catch (error) {
@@ -559,9 +559,8 @@ export function createHyperliquidClient(options: { testnet?: boolean } = {}) {
                     type: 'historicalOrders',
                     user: userAddress,
                     limit: limit,
-                };           
+                };
                 const response = await api.post('/info', payload);
-                console.log(response, 'responseorder');
 
                 return response.data || [];
             } catch (error) {

@@ -41,7 +41,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
     3: false,
   });
 
-  const hyperliquid = createHyperliquidClient({ testnet: true })
+  const hyperliquid = createHyperliquidClient({ testnet: false })
 
   const { swapUSDCToUSDT, transferUSDCToSpot, transferUSDCToPerp, openHypePosition } = useCoreActions();
 
