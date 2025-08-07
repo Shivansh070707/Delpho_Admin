@@ -32,6 +32,8 @@ interface FormData {
   position?: Position;
   leverage?: number;
   collateral?: number;
+  rawMidPrice?: number;
+  isManualPrice?: boolean;
 }
 
 interface AdminTradeExecutorProps {
@@ -262,9 +264,10 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
       position: getAssetPerpPosition("HYPE"),
       currentPosition: 0,
       direction: "toPerp",
-      slippage: 0.001,
+      slippage: 0.0001,
       collateral: Number(getPerpWithdrawableBalance()),
       positionSize: Number(getSpotBalance("USDC")),
+
     });
     const [isPriceLoading, setIsPriceLoading] = useState(false);
 
@@ -278,6 +281,8 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
         if (price !== null) {
           setFormData(prev => ({
             ...prev,
+            rawMidPrice: price,
+            isManualPrice: false,
             price: calculatePriceWithSlippage(
               price,
               prev.slippage || 0,
@@ -291,7 +296,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
         setIsPriceLoading(false);
       }
     };
-     useEffect(() => {
+    useEffect(() => {
       if (currentStep === 1 || currentStep === 3) {
         fetchAndSetMidPrice();
       }
@@ -299,56 +304,56 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
 
 
     useEffect(() => {
-      if (formData.price && formData.slippage !== undefined) {
-        const directionMultiplier = currentStep === 1
-          ? (formData.isBuy ? 1 : -1)
-          : (formData.isLong ? 1 : -1);
-
+      if (!formData.isManualPrice && formData.rawMidPrice !== undefined && formData.slippage !== undefined) {
         const newPrice = calculatePriceWithSlippage(
-          formData.price / (1 + (formData.slippage * directionMultiplier)),
+          formData.rawMidPrice,
           formData.slippage,
           currentStep === 1 ? (formData.isBuy ?? true) : (formData.isLong ?? true)
         );
 
-        setFormData(prev => ({ ...prev, price: newPrice }));
+        setFormData(prev => ({
+          ...prev,
+          price: newPrice
+        }));
       }
-    }, [formData.slippage, formData.isBuy, formData.isLong, formData.price]);
+    }, [formData.slippage, formData.isBuy, formData.isLong, formData.rawMidPrice, formData.isManualPrice]);
 
     const handleIsBuyChange = (isBuy: boolean) => {
       setFormData(prev => {
-        // Calculate new price based on previous state
-        const newPrice = prev.price && prev.slippage !== undefined
-          ? calculatePriceWithSlippage(
-            prev.price / (1 + (prev.slippage * (isBuy ? 1 : -1))),
-            prev.slippage,
-            isBuy
-          )
-          : prev.price;
+        if (prev.rawMidPrice === undefined || prev.isManualPrice) {
+          return { ...prev, isBuy };
+        }
 
         return {
           ...prev,
           isBuy,
-          price: newPrice
+          price: calculatePriceWithSlippage(
+            prev.rawMidPrice,
+            prev.slippage || 0,
+            isBuy
+          )
         };
       });
     };
+
     const handleIsLongChange = (isLong: boolean) => {
       setFormData(prev => {
-        const newPrice = prev.price && prev.slippage !== undefined
-          ? calculatePriceWithSlippage(
-            prev.price / (1 + (prev.slippage * (isLong ? 1 : -1))),
-            prev.slippage,
-            isLong
-          )
-          : prev.price;
+        if (prev.rawMidPrice === undefined || prev.isManualPrice) {
+          return { ...prev, isLong };
+        }
 
         return {
           ...prev,
           isLong,
-          price: newPrice
+          price: calculatePriceWithSlippage(
+            prev.rawMidPrice,
+            prev.slippage || 0,
+            isLong
+          )
         };
       });
     };
+
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
@@ -442,12 +447,11 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                   <input
                     type="number"
                     min="0"
-                    max="1"
+                    max="10"
                     step="0.001"
                     value={
-                      typeof formData.slippage === "number" &&
-                        formData.slippage !== 0
-                        ? formData.slippage
+                      typeof formData.slippage === "number"
+                        ? formData.slippage * 100
                         : ""
                     }
                     onChange={(e) => {
@@ -460,9 +464,10 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                       } else {
                         const numValue = parseFloat(value);
                         if (!isNaN(numValue)) {
+                          const clampedValue = Math.min(numValue, 10);
                           setFormData({
                             ...formData,
-                            slippage: numValue,
+                            slippage: clampedValue / 100,
                           });
                         }
                       }
@@ -498,6 +503,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                         setFormData({
                           ...formData,
                           price: 0,
+                          isManualPrice: true
                         });
                       } else {
                         const numValue = parseFloat(value);
@@ -505,6 +511,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                           setFormData({
                             ...formData,
                             price: numValue,
+                            isManualPrice: true
                           });
                         }
                       }
@@ -794,11 +801,11 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                   <input
                     type="number"
                     min="0"
-                    max="1"
+                    max="10"
                     step="0.001"
                     value={
-                      typeof formData.slippage === "number" && formData.slippage !== 0
-                        ? formData.slippage
+                      typeof formData.slippage === "number"
+                        ? formData.slippage * 100
                         : ""
                     }
                     onChange={(e) => {
@@ -810,10 +817,12 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                         });
                       } else {
                         const numValue = parseFloat(value);
+
                         if (!isNaN(numValue)) {
+                          const clampedValue = Math.min(numValue, 10);
                           setFormData({
                             ...formData,
-                            slippage: numValue,
+                            slippage: clampedValue / 100,
                           });
                         }
                       }
@@ -850,13 +859,16 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                         setFormData({
                           ...formData,
                           price: 0,
+                          isManualPrice: true
                         });
                       } else {
                         const numValue = parseFloat(value);
                         if (!isNaN(numValue)) {
+
                           setFormData({
                             ...formData,
                             price: numValue,
+                            isManualPrice: true
                           });
                         }
                       }
