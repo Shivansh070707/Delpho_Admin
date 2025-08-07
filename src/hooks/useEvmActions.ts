@@ -1,5 +1,6 @@
 import { useAccount, useWalletClient } from "wagmi";
-import { EXECUTOR_ADDRESS, EXECUTOR_ABI } from "../config/constants";
+import { EXECUTOR_ADDRESS } from "../config/constants";
+import { EXECUTOR_ABI } from "../config/Abi.ts";
 import { useCallback } from "react";
 import { waitForTransactionReceipt } from "viem/actions";
 export function useEvmActions() {

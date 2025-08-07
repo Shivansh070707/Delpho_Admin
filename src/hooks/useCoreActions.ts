@@ -7,10 +7,9 @@ import {
   ACTION_IDS,
   TOKEN_IDS,
   MARKET_IDS,
-  CORE_WRITER_ABI,
   EXECUTOR_ADDRESS,
-  EXECUTOR_ABI
 } from "../config/constants";
+import { CORE_WRITER_ABI, EXECUTOR_ABI } from "../config/Abi.ts";
 import { waitForTransactionReceipt } from "viem/actions";
 
 export function useCoreActions() {
@@ -73,7 +72,6 @@ export function useCoreActions() {
         return tx;
       }
 
-   
       if (marketId === MARKET_IDS.USDT_USDC_SPOT) {
         const tx = await walletClient.writeContract({
           address: EXECUTOR_ADDRESS,
@@ -87,7 +85,6 @@ export function useCoreActions() {
         });
         return tx;
       }
-  
     },
     [walletClient, address]
   );
