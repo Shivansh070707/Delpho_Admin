@@ -2187,13 +2187,6 @@ export const EXECUTOR_ABI = [
   },
   {
     type: "function",
-    name: "borrowUSDT",
-    inputs: [{ name: "amount", type: "uint256", internalType: "uint256" }],
-    outputs: [],
-    stateMutability: "nonpayable",
-  },
-  {
-    type: "function",
     name: "clawBack",
     inputs: [
       { name: "token", type: "address", internalType: "address" },
@@ -2231,21 +2224,21 @@ export const EXECUTOR_ABI = [
   },
   {
     type: "function",
-    name: "executeFullLoop",
+    name: "executeFullEvmFlow",
     inputs: [
-      { name: "withdrawAmount", type: "uint256", internalType: "uint256" },
-      { name: "initialAmount", type: "uint256", internalType: "uint256" },
-      { name: "flashloanAmount", type: "uint256", internalType: "uint256" },
       { name: "minAmountOut", type: "uint256", internalType: "uint256" },
-      {
-        name: "minInitialAmountOut",
-        type: "uint256",
-        internalType: "uint256",
-      },
-      { name: "borrowUsdtAmount", type: "uint256", internalType: "uint256" },
+      { name: "minInitialAmountOut", type: "uint256", internalType: "uint256" },
+      { name: "targetLoopValue", type: "uint256", internalType: "uint256" },
     ],
     outputs: [],
     stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "getHyperPrice",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
   },
   {
     type: "function",
@@ -2354,11 +2347,7 @@ export const EXECUTOR_ABI = [
     name: "renounceRole",
     inputs: [
       { name: "role", type: "bytes32", internalType: "bytes32" },
-      {
-        name: "callerConfirmation",
-        type: "address",
-        internalType: "address",
-      },
+      { name: "callerConfirmation", type: "address", internalType: "address" },
     ],
     outputs: [],
     stateMutability: "nonpayable",
@@ -2369,6 +2358,15 @@ export const EXECUTOR_ABI = [
     inputs: [
       { name: "role", type: "bytes32", internalType: "bytes32" },
       { name: "account", type: "address", internalType: "address" },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "setDelphoOracle",
+    inputs: [
+      { name: "_delphoOracle", type: "address", internalType: "address" },
     ],
     outputs: [],
     stateMutability: "nonpayable",
@@ -2434,7 +2432,7 @@ export const EXECUTOR_ABI = [
   {
     type: "function",
     name: "transferUSDT2Core",
-    inputs: [{ name: "amount", type: "uint256", internalType: "uint256" }],
+    inputs: [{ name: "", type: "uint256", internalType: "uint256" }],
     outputs: [],
     stateMutability: "nonpayable",
   },
@@ -2486,12 +2484,7 @@ export const EXECUTOR_ABI = [
     type: "event",
     name: "RoleAdminChanged",
     inputs: [
-      {
-        name: "role",
-        type: "bytes32",
-        indexed: true,
-        internalType: "bytes32",
-      },
+      { name: "role", type: "bytes32", indexed: true, internalType: "bytes32" },
       {
         name: "previousAdminRole",
         type: "bytes32",
@@ -2511,12 +2504,7 @@ export const EXECUTOR_ABI = [
     type: "event",
     name: "RoleGranted",
     inputs: [
-      {
-        name: "role",
-        type: "bytes32",
-        indexed: true,
-        internalType: "bytes32",
-      },
+      { name: "role", type: "bytes32", indexed: true, internalType: "bytes32" },
       {
         name: "account",
         type: "address",
@@ -2536,12 +2524,7 @@ export const EXECUTOR_ABI = [
     type: "event",
     name: "RoleRevoked",
     inputs: [
-      {
-        name: "role",
-        type: "bytes32",
-        indexed: true,
-        internalType: "bytes32",
-      },
+      { name: "role", type: "bytes32", indexed: true, internalType: "bytes32" },
       {
         name: "account",
         type: "address",
