@@ -13,7 +13,7 @@ export function useEvmActions() {
   const executeEvmFlow = useCallback(async () => {
     if (!walletClient || !address) throw new Error("Wallet not connected");
 
-    const slippageBps = 100; // 1% slippage
+    //const slippageBps = 100; // 1% slippage
 
     // const minAmountOut = getSlippageAdjustedAmount(
     //   expectedUsdtOut,
@@ -46,10 +46,10 @@ export function useEvmActions() {
   };
 }
 
-function getSlippageAdjustedAmount(
-  amount: bigint,
-  slippageBps: number
-): bigint {
-  const maxBps = 10_000n;
-  return (amount * BigInt(10_000 - slippageBps)) / maxBps;
-}
+// function getSlippageAdjustedAmount(
+//   amount: bigint,
+//   slippageBps: number
+// ): bigint {
+//   const maxBps = 10_000n;
+//   return (amount * BigInt(10_000 - slippageBps)) / maxBps;
+// }
