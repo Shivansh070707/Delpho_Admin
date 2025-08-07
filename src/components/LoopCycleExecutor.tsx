@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEvmActions } from "../hooks/useEvmActions";
 
 interface LoopCycleData {
   withdrawAmount: number;
@@ -22,11 +23,25 @@ const LoopCycleExecutor = () => {
     borrowUsdtAmount: 0,
   });
 
+  const { executeEvmFlow } = useEvmActions();
+
   const executeLoopCycle = async (data: LoopCycleData) => {
     setIsLoading(true);
     try {
       console.log("Executing loop cycle with data:", data);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      //!check vault balance withdrawAmount >= vaultBalance
+      //!check usdt balance borrowUsdtAmount >= usdtBalance
+
+      await executeEvmFlow(
+        BigInt(data.withdrawAmount),
+        BigInt(data.initialAmount),
+        BigInt(data.flashloanAmount),
+        BigInt(data.minAmountOut),
+        BigInt(data.minInitialAmountOut),
+        BigInt(data.borrowUsdtAmount)
+      );
+
       alert("Loop cycle executed successfully!");
       setLoopCycleData(data);
     } catch (error) {
@@ -319,8 +334,6 @@ const LoopCycleExecutor = () => {
         >
           {isLoading ? "Executing..." : "Start Loop Cycle"}
         </motion.button>
-
-        
       </div>
 
       <LoopCycleModal />

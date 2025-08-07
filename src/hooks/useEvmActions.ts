@@ -6,7 +6,7 @@ export function useEvmActions() {
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient();
 
-  const executeEvmActions = useCallback(
+  const executeEvmFlow = useCallback(
     async (
       withdrawAmount: bigint,
       initialAmount: bigint,
@@ -40,6 +40,6 @@ export function useEvmActions() {
   );
 
   return {
-    executeEvmActions,
+    executeEvmFlow,
   };
 }
