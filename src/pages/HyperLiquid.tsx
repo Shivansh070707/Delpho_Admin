@@ -4,7 +4,6 @@ import TopNav from "../components/TopNav";
 import { motion } from "framer-motion";
 import AdminTradeExecutor from "../components/AdminTradeExecutor";
 import {
-  createHyperliquidClient,
   type FrontendOpenOrders,
   type ClearinghouseState,
   type TwapSliceFill,
@@ -14,7 +13,7 @@ import {
   type SpotClearinghouseState
 } from "../utils/hyperliquid";
 import { resolveCoinName, sortDirection } from "../utils/helper";
-import { EXECUTOR_ADDRESS } from "../config/constants";
+import { useHyperliquid } from "../hooks/useHyperliquidData";
 
 const TABS = [
   "Balances",
@@ -38,62 +37,43 @@ interface TableRow {
 
 const HyperLiquid: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>(TABS[0]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [data, setData] = useState<TableData>({});
-  const [error, setError] = useState<string | null>(null);
 
 
-  const hyperliquidClient = createHyperliquidClient({ testnet: false });
-   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const completeState = await hyperliquidClient.getCompleteUserState(EXECUTOR_ADDRESS);
+  const {
+    balances,
+    positions,
+    openOrders,
+    activeTWAPs,
+    tradeHistory,
+    fundingHistory,
+    orderHistory,
+    loading: isLoading,
+    error,
+    fetchCompleteState,
+  } = useHyperliquid();
 
-        const transformedData: TableData = {
-          Balances: transformBalances(completeState.balances),
-          Positions: transformPositions(completeState.positions),
-          "Open Orders": transformOpenOrders(completeState.openOrders),
-          TWAP: transformTwaps(completeState.activeTWAPs),
-          "Trade History": transformTradeHistory(completeState.tradeHistory),
-          "Funding History": transformFundingHistory(completeState.fundingHistory),
-          "Order History": transformOrderHistory(completeState.orderHistory)
-        };
-
-        setData(transformedData);
-      } catch (err) {
-        console.error("Error fetching Hyperliquid data:", err);
-        setError("Failed to load data. Please try again later.");
-        const emptyData: TableData = {};
-        TABS.forEach(tab => emptyData[tab] = []);
-        setData(emptyData);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-
- 
+  useEffect(() => {
+    fetchCompleteState();
   }, []);
 
-  const transformBalances = (balances: SpotClearinghouseState): TableRow[] => {
-  if (!balances?.balances) return [];
 
-  return balances.balances.map(balance => ({
-    coin: balance.coin || '-',
-    totalBalance: balance.total ? parseFloat(balance.total).toFixed(4) : '0.0000',
-    availableBalance: balance.total && balance.hold 
-      ? (parseFloat(balance.total) - parseFloat(balance.hold)).toFixed(4) 
-      : '0.0000',
-    usdcValue: balance.coin === 'USDC' 
-      ? `$${parseFloat(balance.total).toFixed(2)}` 
-      : '$0.00', 
-    pnl: "+0.00 (0.00%)",
-    contract: balance.token?.toString() || '-'
-  }));
-};
+
+  const transformBalances = (balances: SpotClearinghouseState): TableRow[] => {
+    if (!balances?.balances) return [];
+
+    return balances.balances.map(balance => ({
+      coin: balance.coin || '-',
+      totalBalance: balance.total ? parseFloat(balance.total).toFixed(4) : '0.0000',
+      availableBalance: balance.total && balance.hold
+        ? (parseFloat(balance.total) - parseFloat(balance.hold)).toFixed(4)
+        : '0.0000',
+      usdcValue: balance.coin === 'USDC'
+        ? `$${parseFloat(balance.total).toFixed(2)}`
+        : '$0.00',
+      pnl: "+0.00 (0.00%)",
+      contract: balance.token?.toString() || '-'
+    }));
+  };
 
   const transformPositions = (positions: ClearinghouseState): TableRow[] => {
     return positions.assetPositions.map(position => ({
@@ -138,7 +118,7 @@ const HyperLiquid: React.FC = () => {
       executedSize: twap.fill?.sz ? parseFloat(twap.fill.sz).toFixed(4) : '0.0000',
       averagePrice: twap.fill?.px ? `$${parseFloat(twap.fill.px).toFixed(2)}` : '$0.00',
       runningTime: "N/A",
-      reduceOnly: twap.fill?.reduceOnly? "Yes" : "No",
+      reduceOnly: twap.fill?.reduceOnly ? "Yes" : "No",
       creationTime: twap.fill?.time ? new Date(twap.fill.time).toLocaleString() : '-',
       terminate: "-"
     }));
@@ -178,28 +158,37 @@ const HyperLiquid: React.FC = () => {
   };
 
   const transformOrderHistory = (orders: HistoricalOrder[]): TableRow[] => {
-  if (!orders || !Array.isArray(orders)) return [];
+    if (!orders || !Array.isArray(orders)) return [];
 
-  return orders.map(order => ({
-    time: order.order?.timestamp ? new Date(order.order.timestamp).toLocaleString() : '-',
-    type: order.order?.orderType || '-',
-    coin: resolveCoinName(order.order.coin || '-'), 
-    direction: sortDirection(order.order?.side || '-'), 
-    size: order.order?.sz ? parseFloat(order.order.sz).toFixed(4) : '0.0000',
-    filledSize: order.status === 'filled' && order.order?.sz ?
-      parseFloat(order.order.sz).toFixed(4) : "0.0000",
-    orderValue: order.order?.sz && order.order?.limitPx ?
-      `$${(parseFloat(order.order.sz) * parseFloat(order.order.limitPx)).toFixed(2)}` : '$0.00',
-    price: order.order?.limitPx ? `$${parseFloat(order.order.limitPx).toFixed(2)}` : "Market",
-    reduceOnly: order.order?.reduceOnly ? "Yes" : "No",
-    triggerConditions: order.order?.triggerPx ?
-      `$${parseFloat(order.order.triggerPx).toFixed(2)}` : "-",
-    tpSl: order.order?.isPositionTpsl ? "TP/SL" : "-",
-    status: order.status ?
-      (order.status.charAt(0).toUpperCase() + order.status.slice(1)) : '-',
-    orderId: order.order?.oid ? order.order.oid.toString() : '-'
-  }));
-};
+    return orders.map(order => ({
+      time: order.order?.timestamp ? new Date(order.order.timestamp).toLocaleString() : '-',
+      type: order.order?.orderType || '-',
+      coin: resolveCoinName(order.order.coin || '-'),
+      direction: sortDirection(order.order?.side || '-'),
+      size: order.order?.sz ? parseFloat(order.order.sz).toFixed(4) : '0.0000',
+      filledSize: order.status === 'filled' && order.order?.sz ?
+        parseFloat(order.order.sz).toFixed(4) : "0.0000",
+      orderValue: order.order?.sz && order.order?.limitPx ?
+        `$${(parseFloat(order.order.sz) * parseFloat(order.order.limitPx)).toFixed(2)}` : '$0.00',
+      price: order.order?.limitPx ? `$${parseFloat(order.order.limitPx).toFixed(2)}` : "Market",
+      reduceOnly: order.order?.reduceOnly ? "Yes" : "No",
+      triggerConditions: order.order?.triggerPx ?
+        `$${parseFloat(order.order.triggerPx).toFixed(2)}` : "-",
+      tpSl: order.order?.isPositionTpsl ? "TP/SL" : "-",
+      status: order.status ?
+        (order.status.charAt(0).toUpperCase() + order.status.slice(1)) : '-',
+      orderId: order.order?.oid ? order.order.oid.toString() : '-'
+    }));
+  };
+  const data: TableData = {
+    Balances: transformBalances(balances),
+    Positions: transformPositions(positions),
+    "Open Orders": transformOpenOrders(openOrders),
+    TWAP: transformTwaps(activeTWAPs),
+    "Trade History": transformTradeHistory(tradeHistory),
+    "Funding History": transformFundingHistory(fundingHistory),
+    "Order History": transformOrderHistory(orderHistory)
+  };
   const columns = {
     Balances: [
       { label: "Coin", key: "coin" },
@@ -319,8 +308,8 @@ const HyperLiquid: React.FC = () => {
             <motion.button
               key={tab}
               className={`px-4 py-2 text-base font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === tab
-                  ? "border-[#00FFB2] text-[#E6FFF6]"
-                  : "border-transparent text-[#A3B8B0] hover:text-[#E6FFF6]"
+                ? "border-[#00FFB2] text-[#E6FFF6]"
+                : "border-transparent text-[#A3B8B0] hover:text-[#E6FFF6]"
                 }`}
               onClick={() => setActiveTab(tab)}
               whileHover={{ scale: 1.05 }}
