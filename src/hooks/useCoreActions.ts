@@ -59,7 +59,6 @@ export function useCoreActions() {
     ) => {
       if (!walletClient || !address) throw new Error("Wallet not connected");
 
-      // For HYPE perp orders, use the executor contract
       if (marketId === MARKET_IDS.HYPE_PERP) {
         const tx = await walletClient.writeContract({
           address: EXECUTOR_ADDRESS,
