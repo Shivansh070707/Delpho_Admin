@@ -75,8 +75,7 @@ const HyperLiquid: React.FC = () => {
 
     fetchData();
 
-    const interval = setInterval(fetchData, 30000); 
-    return () => clearInterval(interval);
+ 
   }, []);
 
   const transformBalances = (balances: SpotClearinghouseState): TableRow[] => {
