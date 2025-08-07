@@ -4,6 +4,7 @@ import { parseUnits } from "viem";
 import { useCoreActions } from "../hooks/useCoreActions";
 import { createHyperliquidClient, type Position } from "../utils/hyperliquid";
 import { useHyperliquid } from "../hooks/useHyperliquidData";
+import { calculatePriceWithSlippage } from "../utils/helper";
 
 interface StepData {
   isBuy?: boolean;
@@ -74,7 +75,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
       await fetchPositions();
     };
     fetchData();
-    console.log('useeffect called');
+
 
   }, [])
 
@@ -276,25 +277,26 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
       direction: "toPerp",
       slippage: 0.001,
       collateral: Number(getPerpWithdrawableBalance()),
-      positionSize: Number(getPerpWithdrawableBalance()),
+      positionSize: Number(getSpotBalance("USDC")),
     });
     const [isPriceLoading, setIsPriceLoading] = useState(false);
 
     const fetchAndSetMidPrice = async () => {
       setIsPriceLoading(true);
       try {
-        let price;
-        if (currentStep === 1) {
-          price = await hyperliquid.getAssetPrice("USDT0", false);
-        } else {
-          price = await hyperliquid.getAssetPrice("HYPE", true);
-        }
+        const asset = currentStep === 1 ? "USDT0" : "HYPE";
+        const isPerp = currentStep !== 1;
+        const price = await hyperliquid.getAssetPrice(asset, isPerp);
 
         if (price !== null) {
-          setFormData({
-            ...formData,
-            price: price,
-          });
+          setFormData(prev => ({
+            ...prev,
+            price: calculatePriceWithSlippage(
+              price,
+              prev.slippage || 0,
+              currentStep === 1 ? (prev.isBuy ?? true) : (prev.isLong ?? true)
+            )
+          }));
         }
       } catch (error) {
         console.error("Error fetching mid price:", error);
@@ -302,13 +304,64 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
         setIsPriceLoading(false);
       }
     };
-
-    // Fetch mid price on component mount for steps 1 and 3
-    React.useEffect(() => {
+     useEffect(() => {
       if (currentStep === 1 || currentStep === 3) {
         fetchAndSetMidPrice();
       }
-    }, [currentStep]);
+    }, []);
+
+
+    useEffect(() => {
+      if (formData.price && formData.slippage !== undefined) {
+        const directionMultiplier = currentStep === 1
+          ? (formData.isBuy ? 1 : -1)
+          : (formData.isLong ? 1 : -1);
+
+        const newPrice = calculatePriceWithSlippage(
+          formData.price / (1 + (formData.slippage * directionMultiplier)),
+          formData.slippage,
+          currentStep === 1 ? (formData.isBuy ?? true) : (formData.isLong ?? true)
+        );
+
+        setFormData(prev => ({ ...prev, price: newPrice }));
+      }
+    }, [formData.slippage, formData.isBuy, formData.isLong, formData.price]);
+
+    const handleIsBuyChange = (isBuy: boolean) => {
+      setFormData(prev => {
+        // Calculate new price based on previous state
+        const newPrice = prev.price && prev.slippage !== undefined
+          ? calculatePriceWithSlippage(
+            prev.price / (1 + (prev.slippage * (isBuy ? 1 : -1))),
+            prev.slippage,
+            isBuy
+          )
+          : prev.price;
+
+        return {
+          ...prev,
+          isBuy,
+          price: newPrice
+        };
+      });
+    };
+    const handleIsLongChange = (isLong: boolean) => {
+      setFormData(prev => {
+        const newPrice = prev.price && prev.slippage !== undefined
+          ? calculatePriceWithSlippage(
+            prev.price / (1 + (prev.slippage * (isLong ? 1 : -1))),
+            prev.slippage,
+            isLong
+          )
+          : prev.price;
+
+        return {
+          ...prev,
+          isLong,
+          price: newPrice
+        };
+      });
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
@@ -376,7 +429,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    onClick={() => setFormData({ ...formData, isBuy: true })}
+                    onClick={() => handleIsBuyChange(true)}
                     className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${formData.isBuy === true
                       ? "bg-green-500 text-white"
                       : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
@@ -386,7 +439,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                   </button>
                   <button
                     type="button"
-                    onClick={() => setFormData({ ...formData, isBuy: false })}
+                    onClick={() => handleIsBuyChange(false)}
                     className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${formData.isBuy === false
                       ? "bg-red-500 text-white"
                       : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
@@ -488,13 +541,12 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                 <label className="block text-sm font-medium text-[#E6FFF6] mb-2">
                   USDT Amount
                 </label>
+
+
                 <input
                   type="number"
                   value={
-                    typeof formData.positionSize === "number" &&
-                      formData.positionSize !== 0
-                      ? formData.positionSize
-                      : ""
+                    formData.isBuy ? (Number(getSpotBalance("USDC")) / formData.price!).toFixed(4) : getSpotBalance("USDT0").toFixed(4)
                   }
                   onChange={(e) => {
                     const value = e.target.value;
@@ -528,7 +580,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                   <div className="flex justify-between text-xs text-[#A3B8B0]">
                     <span>USDT Balance:</span>
                     <span className="text-[#E6FFF6] font-medium">
-                      {getSpotBalance("USDT").toFixed(2)} USDT
+                      {getSpotBalance("USDT0").toFixed(2)} USDT
                     </span>
                   </div>
                 </div>
@@ -563,7 +615,9 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                   value={
                     typeof formData.amount === "number" && formData.amount !== 0
                       ? formData.amount
-                      : ""
+                      : formData.direction === "toPerp"
+                        ? Number(getSpotBalance("USDC"))
+                        : Number(getPerpWithdrawableBalance())
                   }
                   onChange={(e) => {
                     const value = e.target.value;
@@ -637,7 +691,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    onClick={() => setFormData({ ...formData, isLong: true })}
+                    onClick={() => handleIsLongChange(true)}
                     className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${formData.isLong === true
                       ? "bg-green-500 text-white"
                       : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
@@ -647,7 +701,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                   </button>
                   <button
                     type="button"
-                    onClick={() => setFormData({ ...formData, isLong: false })}
+                    onClick={() => handleIsLongChange(false)}
                     className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${formData.isLong === false
                       ? "bg-red-500 text-white"
                       : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
@@ -741,12 +795,12 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                 <div className="flex justify-between text-sm">
                   <span className="text-[#A3B8B0]">Position Size</span>
                   <span className="text-[#E6FFF6]">
-                    {Number(formData.positionSize || 0).toFixed(2)} USDT
+                    {Number(formData.availableToTrade || 0).toFixed(2)} USDT
                   </span>
                 </div>
               </div>
 
-            
+
               <div className="flex items-center justify-between text-xs text-[#A3B8B0]">
                 <span>Slippage:</span>
                 <div className="flex items-center gap-2">
@@ -840,7 +894,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                 <input
                   type="number"
                   value={
-                    formData.availableToTrade 
+                    formData.availableToTrade
                   }
                   onChange={(e) => {
                     const value = e.target.value;
