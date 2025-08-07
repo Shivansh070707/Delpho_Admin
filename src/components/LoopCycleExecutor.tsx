@@ -30,17 +30,7 @@ const LoopCycleExecutor = () => {
     try {
       console.log("Executing loop cycle with data:", data);
 
-      //!check vault balance withdrawAmount >= vaultBalance
-      //!check usdt balance borrowUsdtAmount >= usdtBalance
-
-      await executeEvmFlow(
-        BigInt(data.withdrawAmount),
-        BigInt(data.initialAmount),
-        BigInt(data.flashloanAmount),
-        BigInt(data.minAmountOut),
-        BigInt(data.minInitialAmountOut),
-        BigInt(data.borrowUsdtAmount)
-      );
+      await executeEvmFlow();
 
       alert("Loop cycle executed successfully!");
       setLoopCycleData(data);
