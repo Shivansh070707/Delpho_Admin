@@ -64,21 +64,8 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
   const {
     getAssetPerpPosition,
     getSpotBalance,
-    getPerpWithdrawableBalance,
-    fetchBalances,
-    fetchPositions
+    getPerpWithdrawableBalance
   } = useHyperliquid();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchBalances();
-      await fetchPositions();
-    };
-    fetchData();
-
-
-  }, [])
-
 
   const hyperliquid = createHyperliquidClient({ testnet: false });
 
