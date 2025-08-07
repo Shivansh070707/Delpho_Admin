@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { useVaultData } from "../hooks/useVaultData";
 
 interface VaultMetrics {
-  delpho: string;
   totalCollateral: string;
   totalBorrowed: string;
   dusdMinted: string;
@@ -15,7 +14,6 @@ const VaultDashboard: React.FC = () => {
   const { data, isLoading, error } = useVaultData();
 
   const VAULT_METRICS: VaultMetrics[] = data ? [{
-    delpho: "Delpho Vault",
     totalCollateral: Number(data.totalCollateral).toFixed(3),
     totalBorrowed: Number(data.totalBorrowed).toFixed(3),
     dusdMinted: Number(data.dusdMinted).toFixed(3),
@@ -40,7 +38,6 @@ const VaultDashboard: React.FC = () => {
             <table className="min-w-full text-left">
               <thead>
                 <tr className="text-[#A3B8B0] border-b border-[#1A2323]">
-                  <th className="py-2 px-4 font-normal">Delpho</th>
                   <th className="py-2 px-4 font-normal">Total Collateral</th>
                   <th className="py-2 px-4 font-normal">Total Borrowed</th>
                   <th className="py-2 px-4 font-normal">dUSD Minted</th>
@@ -55,7 +52,6 @@ const VaultDashboard: React.FC = () => {
                     transition={{ duration: 0.3, delay: idx * 0.04 }}
                     className="border-b border-[#1A2323]"
                   >
-                    <td className="py-2 px-4">{row.delpho}</td>
                     <td className="py-2 px-4">{row.totalCollateral}</td>
                     <td className="py-2 px-4">{row.totalBorrowed}</td>
                     <td className="py-2 px-4">{row.dusdMinted}</td>
