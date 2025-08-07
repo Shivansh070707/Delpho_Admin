@@ -1,7 +1,7 @@
 import { COIN_NAME_MAP } from "../config/constants";
 
 export function resolveCoinName(apiCoinName: string): string {
- 
+
   if (COIN_NAME_MAP[apiCoinName]) {
     return COIN_NAME_MAP[apiCoinName];
   }
@@ -11,13 +11,12 @@ export function resolveCoinName(apiCoinName: string): string {
 export function sortDirection(direction: string): string {
   if (direction === 'A') return 'Buy';
   if (direction === 'B') return 'Sell';
-  return direction; 
+  return direction;
 }
 export const calculatePriceWithSlippage = (price: number, slippage: number, isBuy: boolean) => {
-
   const slippageMultiplier = isBuy ? (1 + slippage) : (1 - slippage);
   const calculatedPrice = price * slippageMultiplier;
-  
 
-  return parseFloat(calculatedPrice.toFixed(4));
+  const truncatedPrice = Math.floor(calculatedPrice * 10000) / 10000;
+  return truncatedPrice;
 };
