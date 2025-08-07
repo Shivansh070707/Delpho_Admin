@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import HomeSidebar from "../components/HomeSidebar";
 import TopNav from "../components/TopNav";
 import { motion } from "framer-motion";
@@ -52,7 +52,7 @@ const HyperLiquid: React.FC = () => {
     fetchCompleteState,
   } = useHyperliquid();
 
-  useCallback(() => {
+  useEffect(() => {
     fetchCompleteState();
   }, []);
 
