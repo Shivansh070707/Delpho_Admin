@@ -34,7 +34,27 @@ const emptyClearinghouseState: ClearinghouseState = {
     time: 0,
     withdrawable: "0"
 };
-
+export type Position = {
+  coin: string;
+  cumFunding: {
+    allTime: string;
+    sinceChange: string;
+    sinceOpen: string;
+  };
+  entryPx: string;
+  leverage: {
+    rawUsd: string;
+    type: string;
+    value: number;
+  };
+  liquidationPx: string;
+  marginUsed: string;
+  maxLeverage: number;
+  positionValue: string;
+  returnOnEquity: string;
+  szi: string;
+  unrealizedPnl: string;
+};
 
 export interface HistoricalOrder {
     order: {

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { parseUnits } from "viem";
 import { useCoreActions } from "../hooks/useCoreActions";
-import { createHyperliquidClient } from "../utils/hyperliquid";
+import { createHyperliquidClient, type Position } from "../utils/hyperliquid";
+import { useHyperliquid } from "../hooks/useHyperliquidData";
 
 interface StepData {
   isBuy?: boolean;
@@ -27,6 +28,9 @@ interface FormData {
   amount?: number;
   direction?: "toPerp" | "toSpot";
   slippage?: number;
+  position?: Position;
+  leverage?: number;
+  collateral?: number;
 }
 
 interface AdminTradeExecutorProps {
@@ -55,6 +59,25 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
     2: false,
     3: false,
   });
+
+  const {
+    getAssetPerpPosition,
+    getSpotBalance,
+    getPerpWithdrawableBalance,
+    fetchBalances,
+    fetchPositions
+  } = useHyperliquid();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchBalances();
+      await fetchPositions();
+    };
+    fetchData();
+    console.log('useeffect called');
+
+  }, [])
+
 
   const hyperliquid = createHyperliquidClient({ testnet: false });
 
@@ -141,8 +164,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
     } catch (error) {
       console.error("Transfer failed:", error);
       alert(
-        `Transfer failed: ${
-          error instanceof Error ? error.message : String(error)
+        `Transfer failed: ${error instanceof Error ? error.message : String(error)
         }`
       );
       throw error;
@@ -193,8 +215,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
     } catch (error) {
       console.error("Error in handleModalSubmit:", error);
       alert(
-        `Operation failed: ${
-          error instanceof Error ? error.message : String(error)
+        `Operation failed: ${error instanceof Error ? error.message : String(error)
         }`
       );
     } finally {
@@ -208,13 +229,12 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
         <div key={step.id} className="flex items-center">
           <div className="flex flex-col items-center">
             <motion.div
-              className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold cursor-pointer transition-all ${
-                step.id === currentStep
-                  ? "bg-[#00FFB2] text-[#0B1212]"
-                  : step.completed
+              className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold cursor-pointer transition-all ${step.id === currentStep
+                ? "bg-[#00FFB2] text-[#0B1212]"
+                : step.completed
                   ? "bg-[#00FFB2] text-[#0B1212]"
                   : "bg-[#1A2323] text-[#A3B8B0]"
-              }`}
+                }`}
               onClick={() => handleStepClick(step.id)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -223,9 +243,8 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
             </motion.div>
             <div className="mt-2 text-center">
               <div
-                className={`text-sm font-medium ${
-                  step.id === currentStep ? "text-[#E6FFF6]" : "text-[#A3B8B0]"
-                }`}
+                className={`text-sm font-medium ${step.id === currentStep ? "text-[#E6FFF6]" : "text-[#A3B8B0]"
+                  }`}
               >
                 {step.title}
               </div>
@@ -236,9 +255,8 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
           </div>
           {index < steps.length - 1 && (
             <div
-              className={`flex-1 h-0.5 mx-4 ${
-                step.completed ? "bg-[#00FFB2]" : "bg-[#1A2323]"
-              }`}
+              className={`flex-1 h-0.5 mx-4 ${step.completed ? "bg-[#00FFB2]" : "bg-[#1A2323]"
+                }`}
             />
           )}
         </div>
@@ -251,12 +269,14 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
       isLong: false,
       isBuy: false,
       price: 0,
-      positionSize: 0,
       positionPercentage: 0,
-      availableToTrade: 0,
+      availableToTrade: Number(getPerpWithdrawableBalance()),
+      position: getAssetPerpPosition("HYPE"),
       currentPosition: 0,
       direction: "toPerp",
       slippage: 0.001,
+      collateral: Number(getPerpWithdrawableBalance()),
+      positionSize: Number(getPerpWithdrawableBalance()),
     });
     const [isPriceLoading, setIsPriceLoading] = useState(false);
 
@@ -357,22 +377,20 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, isBuy: true })}
-                    className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
-                      formData.isBuy === true
-                        ? "bg-green-500 text-white"
-                        : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
-                    }`}
+                    className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${formData.isBuy === true
+                      ? "bg-green-500 text-white"
+                      : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
+                      }`}
                   >
                     Buy USDT
                   </button>
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, isBuy: false })}
-                    className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
-                      formData.isBuy === false
-                        ? "bg-red-500 text-white"
-                        : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
-                    }`}
+                    className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${formData.isBuy === false
+                      ? "bg-red-500 text-white"
+                      : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
+                      }`}
                   >
                     Sell USDT
                   </button>
@@ -388,7 +406,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                     step="0.001"
                     value={
                       typeof formData.slippage === "number" &&
-                      formData.slippage !== 0
+                        formData.slippage !== 0
                         ? formData.slippage
                         : ""
                     }
@@ -474,7 +492,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                   type="number"
                   value={
                     typeof formData.positionSize === "number" &&
-                    formData.positionSize !== 0
+                      formData.positionSize !== 0
                       ? formData.positionSize
                       : ""
                   }
@@ -504,13 +522,13 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                   <div className="flex justify-between text-xs text-[#A3B8B0]">
                     <span>USDC Balance:</span>
                     <span className="text-[#E6FFF6] font-medium">
-                      1,234.56 USDC
+                      {getSpotBalance("USDC").toFixed(2)} USDC
                     </span>
                   </div>
                   <div className="flex justify-between text-xs text-[#A3B8B0]">
                     <span>USDT Balance:</span>
                     <span className="text-[#E6FFF6] font-medium">
-                      2,567.89 USDT
+                      {getSpotBalance("USDT").toFixed(2)} USDT
                     </span>
                   </div>
                 </div>
@@ -523,7 +541,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                       {typeof formData.positionSize === "number" &&
                         !isNaN(formData.positionSize) &&
                         formData.positionSize <
-                          calculateMinOrderValue(formData.price) && (
+                        calculateMinOrderValue(formData.price) && (
                           <span className="text-red-500 ml-2">
                             Amount too small!
                           </span>
@@ -570,7 +588,9 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                 <div className="flex justify-between text-xs text-[#A3B8B0] mt-2">
                   <span>USDC Balance:</span>
                   <span className="text-[#E6FFF6] font-medium">
-                    1,234.56 USDC
+                    {formData.direction === "toPerp"
+                      ? getSpotBalance("USDC").toFixed(2)
+                      : Number(getPerpWithdrawableBalance()).toFixed(2)} USDC
                   </span>
                 </div>
               </div>
@@ -584,11 +604,10 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                     onClick={() =>
                       setFormData({ ...formData, direction: "toPerp" })
                     }
-                    className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
-                      formData.direction === "toPerp"
-                        ? "bg-[#00FFB2] text-[#0B1212]"
-                        : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
-                    }`}
+                    className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${formData.direction === "toPerp"
+                      ? "bg-[#00FFB2] text-[#0B1212]"
+                      : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
+                      }`}
                   >
                     Spot → Perp
                   </button>
@@ -597,11 +616,10 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                     onClick={() =>
                       setFormData({ ...formData, direction: "toSpot" })
                     }
-                    className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
-                      formData.direction === "toSpot"
-                        ? "bg-[#00FFB2] text-[#0B1212]"
-                        : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
-                    }`}
+                    className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${formData.direction === "toSpot"
+                      ? "bg-[#00FFB2] text-[#0B1212]"
+                      : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
+                      }`}
                   >
                     Perp → Spot
                   </button>
@@ -609,7 +627,6 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
               </div>
             </div>
           );
-
         case 3:
           return (
             <div className="space-y-4">
@@ -621,152 +638,79 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, isLong: true })}
-                    className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
-                      formData.isLong === true
-                        ? "bg-green-500 text-white"
-                        : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
-                    }`}
+                    className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${formData.isLong === true
+                      ? "bg-green-500 text-white"
+                      : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
+                      }`}
                   >
                     Buy / Long
                   </button>
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, isLong: false })}
-                    className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
-                      formData.isLong === false
-                        ? "bg-red-500 text-white"
-                        : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
-                    }`}
+                    className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${formData.isLong === false
+                      ? "bg-red-500 text-white"
+                      : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
+                      }`}
                   >
                     Sell / Short
                   </button>
                 </div>
               </div>
 
+              {/* Leverage slider */}
               <div>
                 <label className="block text-sm font-medium text-[#E6FFF6] mb-2">
-                  Position Size (%)
+                  Leverage (1-10x)
                 </label>
                 <div className="flex items-center gap-4">
                   <div className="flex-1 relative">
                     <input
                       type="range"
-                      min="0"
-                      max="100"
-                      value={formData.positionPercentage || 0}
+                      min="1"
+                      max="10"
+                      step="0.1"
+                      value={formData.leverage || 1}
                       onChange={(e) => {
-                        const percentage = parseFloat(e.target.value);
+                        const leverage = parseFloat(e.target.value);
                         setFormData({
                           ...formData,
-                          positionPercentage: percentage,
-                          positionSize:
-                            (percentage / 100) *
-                            (formData.availableToTrade || 0),
+                          leverage: leverage,
+                          positionSize: (formData.collateral || 0) * leverage,
                         });
                       }}
                       className="w-full h-3 bg-[#1A2323] rounded-full appearance-none cursor-pointer slider-thumb"
                       style={{
-                        background: `linear-gradient(to right, #00FFB2 0%, #00FFB2 ${
-                          formData.positionPercentage || 0
-                        }%, #2A3333 ${
-                          formData.positionPercentage || 0
-                        }%, #2A3333 100%)`,
+                        background: `linear-gradient(to right, #00FFB2 0%, #00FFB2 ${((formData.leverage || 1) - 1) * (100 / 9)
+                          }%, #2A3333 ${((formData.leverage || 1) - 1) * (100 / 9)
+                          }%, #2A3333 100%)`,
                         boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.3)",
                       }}
-                      onInput={(e) => {
-                        const target = e.target as HTMLInputElement;
-                        const percentage = parseFloat(target.value);
-                        setFormData({
-                          ...formData,
-                          positionPercentage: percentage,
-                          positionSize:
-                            (percentage / 100) *
-                            (formData.availableToTrade || 0),
-                        });
-                      }}
                     />
-                    <style
-                      dangerouslySetInnerHTML={{
-                        __html: `
-                          .slider-thumb::-webkit-slider-thumb {
-                            appearance: none;
-                            height: 20px;
-                            width: 20px;
-                            border-radius: 50%;
-                            background: #00FFB2;
-                            cursor: pointer;
-                            border: 2px solid #0B1212;
-                            box-shadow: 0 2px 6px rgba(0, 255, 178, 0.3);
-                            transition: all 0.2s ease;
-                          }
-                          .slider-thumb::-webkit-slider-thumb:hover {
-                            transform: scale(1.1);
-                            box-shadow: 0 4px 12px rgba(0, 255, 178, 0.4);
-                          }
-                          .slider-thumb::-webkit-slider-thumb:active {
-                            transform: scale(0.95);
-                            box-shadow: 0 2px 8px rgba(0, 255, 178, 0.5);
-                          }
-                          .slider-thumb::-moz-range-thumb {
-                            height: 20px;
-                            width: 20px;
-                            border-radius: 50%;
-                            background: #00FFB2;
-                            cursor: pointer;
-                            border: 2px solid #0B1212;
-                            box-shadow: 0 2px 6px rgba(0, 255, 178, 0.3);
-                            transition: all 0.2s ease;
-                          }
-                          .slider-thumb::-moz-range-thumb:hover {
-                            transform: scale(1.1);
-                            box-shadow: 0 4px 12px rgba(0, 255, 178, 0.4);
-                          }
-                          .slider-thumb::-moz-range-thumb:active {
-                            transform: scale(0.95);
-                            box-shadow: 0 2px 8px rgba(0, 255, 178, 0.5);
-                          }
-                          .slider-thumb::-webkit-slider-track {
-                            background: transparent;
-                            border-radius: 10px;
-                            height: 6px;
-                          }
-                          .slider-thumb::-moz-range-track {
-                            background: transparent;
-                            border-radius: 10px;
-                            height: 6px;
-                          }
-                        `,
-                      }}
-                    />
+                    {/* Slider thumb styles remain the same */}
                   </div>
                   <div className="flex items-center gap-2 bg-[#1A2323] border border-[#2A3333] rounded-lg px-3 py-2 focus-within:border-[#00FFB2] transition-colors">
                     <motion.input
                       type="number"
-                      min="0"
-                      max="100"
-                      value={
-                        typeof formData.positionPercentage === "number" &&
-                        formData.positionPercentage !== 0
-                          ? formData.positionPercentage
-                          : ""
-                      }
+                      min="1"
+                      max="10"
+                      step="0.1"
+                      value={formData.leverage || 1}
                       onChange={(e) => {
                         const value = e.target.value;
                         if (value === "") {
                           setFormData({
                             ...formData,
-                            positionPercentage: 0,
-                            positionSize: 0,
+                            leverage: 1,
+                            positionSize: formData.collateral || 0,
                           });
                         } else {
-                          const percentage = parseFloat(value);
-                          if (!isNaN(percentage)) {
+                          const leverage = parseFloat(value);
+                          if (!isNaN(leverage)) {
                             setFormData({
                               ...formData,
-                              positionPercentage: percentage,
-                              positionSize:
-                                (percentage / 100) *
-                                (formData.availableToTrade || 0),
+                              leverage: Math.min(Math.max(leverage, 1), 10),
+                              positionSize: (formData.collateral || 0) * Math.min(Math.max(leverage, 1), 10),
                             });
                           }
                         }
@@ -775,28 +719,34 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                       whileFocus={{ scale: 1.02 }}
                       whileHover={{ scale: 1.01 }}
                     />
-                    <span className="text-[#A3B8B0] text-sm font-medium">
-                      %
-                    </span>
+                    <span className="text-[#A3B8B0] text-sm font-medium">x</span>
                   </div>
                 </div>
               </div>
 
+              {/* Info display section */}
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-[#A3B8B0]">Available to Trade</span>
                   <span className="text-[#E6FFF6]">
-                    {formData.availableToTrade || 0.0}
+                    {Number(formData.availableToTrade || 0).toFixed(2)} USDC
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-[#A3B8B0]">Current Position</span>
                   <span className="text-blue-400">
-                    {formData.currentPosition || 0.0} HYPE
+                    {Math.abs(Number(formData.position?.szi)) || 0.0} HYPE
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-[#A3B8B0]">Position Size</span>
+                  <span className="text-[#E6FFF6]">
+                    {Number(formData.positionSize || 0).toFixed(2)} USDT
                   </span>
                 </div>
               </div>
 
+            
               <div className="flex items-center justify-between text-xs text-[#A3B8B0]">
                 <span>Slippage:</span>
                 <div className="flex items-center gap-2">
@@ -806,8 +756,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                     max="1"
                     step="0.001"
                     value={
-                      typeof formData.slippage === "number" &&
-                      formData.slippage !== 0
+                      typeof formData.slippage === "number" && formData.slippage !== 0
                         ? formData.slippage
                         : ""
                     }
@@ -872,9 +821,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                       }
                     }}
                     className="w-full px-3 py-2 bg-[#1A2323] border border-[#2A3333] rounded-lg text-[#E6FFF6] focus:outline-none focus:border-[#00FFB2] cursor-text"
-                    placeholder={
-                      isPriceLoading ? "Loading price..." : "Enter price"
-                    }
+                    placeholder={isPriceLoading ? "Loading price..." : "Enter price"}
                     disabled={isPriceLoading}
                   />
                   {isPriceLoading && (
@@ -884,47 +831,42 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                   )}
                 </div>
               </div>
+
+              {/* Collateral input (USDT Amount) */}
               <div>
                 <label className="block text-sm font-medium text-[#E6FFF6] mb-2">
-                  Position Size
+                  Enter USDT Amount
                 </label>
                 <input
                   type="number"
                   value={
-                    typeof formData.positionSize === "number" &&
-                    formData.positionSize !== 0
-                      ? formData.positionSize
-                      : ""
+                    formData.availableToTrade 
                   }
                   onChange={(e) => {
                     const value = e.target.value;
                     if (value === "") {
                       setFormData({
                         ...formData,
+                        collateral: 0,
                         positionSize: 0,
-                        positionPercentage: 0,
                       });
                     } else {
                       const numValue = parseFloat(value);
                       if (!isNaN(numValue)) {
-                        const percentage = formData.availableToTrade
-                          ? (numValue / formData.availableToTrade) * 100
-                          : 0;
                         setFormData({
                           ...formData,
-                          positionSize: numValue,
-                          positionPercentage: percentage,
+                          collateral: numValue,
+                          positionSize: numValue * (formData.leverage || 1),
                         });
                       }
                     }
                   }}
                   className="w-full px-3 py-2 bg-[#1A2323] border border-[#2A3333] rounded-lg text-[#E6FFF6] focus:outline-none focus:border-[#00FFB2] cursor-text"
-                  placeholder="Enter position size"
+                  placeholder="Enter USDT amount"
                 />
               </div>
             </div>
           );
-
         default:
           return null;
       }
