@@ -14,7 +14,8 @@ import {
     setError,
 } from "../features/hyperliquidSlice";
 import {
-    createHyperliquidClient
+    createHyperliquidClient,
+    type Position
 } from "../utils/hyperliquid";
 import { EXECUTOR_ADDRESS } from "../config/constants";
 
@@ -36,7 +37,18 @@ export const useHyperliquid = () => {
         return hyperliquidState.positions.withdrawable
     }
 
-
+    const getAssetPerpPosition = (asset: string): Position => {
+        try {
+            const positions = hyperliquidState.positions.assetPositions;
+            const assetPosition = positions.find(
+                (pos) => pos.position.coin.toUpperCase() === asset.toUpperCase()
+            );
+            return assetPosition ? assetPosition.position : {} as Position;
+        } catch (err) {
+            console.error(`Error getting ${asset} position:`, err);
+            return {} as Position;
+        }
+    };
 
     const fetchCompleteState = async (): Promise<void> => {
         try {
@@ -185,6 +197,7 @@ export const useHyperliquid = () => {
         fetchFundingHistory,
         fetchOrderHistory,
         fetchActiveTWAPs,
-        getPerpWithdrawableBalance
+        getPerpWithdrawableBalance,
+        getAssetPerpPosition
     };
 };
