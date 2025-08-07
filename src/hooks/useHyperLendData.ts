@@ -17,12 +17,12 @@ interface HyperLendData {
 export function useHyperLendData() {
   const address = EXECUTOR_ADDRESS;
   const chainId = useChainId();
-  
+
   return useQuery<HyperLendData | null>({
     queryKey: ['hyperlendData', address, chainId],
     queryFn: async () => {
       if (!address) return null;
-      
+
       const chain = hyperliquidMainnet;
       const client = createPublicClient({
         chain,
@@ -35,8 +35,6 @@ export function useHyperLendData() {
         functionName: 'getUserAccountData',
         args: [address]
       }) as [bigint, bigint, bigint, bigint, bigint, bigint];
-      console.log(result,'result');
-      
 
       const [
         totalCollateralBase,
@@ -48,7 +46,7 @@ export function useHyperLendData() {
       ] = result;
 
       const decimals = 8;
-      
+
       return {
         totalCollateral: parseFloat(formatUnits(totalCollateralBase, decimals)),
         totalDebt: parseFloat(formatUnits(totalDebtBase, decimals)),
@@ -60,6 +58,6 @@ export function useHyperLendData() {
     },
     enabled: !!address,
     staleTime: 60_000,
-    refetchInterval: 300_000, 
+    refetchInterval: 300_000,
   });
 }

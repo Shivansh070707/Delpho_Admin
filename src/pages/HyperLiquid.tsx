@@ -78,7 +78,7 @@ const HyperLiquid: React.FC = () => {
   const transformPositions = (positions: ClearinghouseState): TableRow[] => {
     return positions.assetPositions.map(position => ({
       coin: position.position?.coin || '-',
-      size: position.position?.szi ? parseFloat(position.position.szi).toFixed(4) : '0.0000',
+      size: position.position?.szi ? Math.abs(parseFloat(position.position.szi)).toFixed(4) : '0.0000',
       positionValue: position.position?.positionValue ? `$${parseFloat(position.position.positionValue).toFixed(2)}` : '$0.00',
       entryPrice: position.position?.entryPx ? `$${parseFloat(position.position.entryPx).toFixed(2)}` : '$0.00',
       markPrice: position.position?.liquidationPx ? `$${parseFloat(position.position.liquidationPx).toFixed(2)}` : '$0.00',
