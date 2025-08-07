@@ -7,40 +7,49 @@ export function useEvmActions() {
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient();
 
-  const executeEvmFlow = useCallback(
-    async (
-      withdrawAmount: bigint,
-      initialAmount: bigint,
-      flashloanAmount: bigint,
-      minAmountOut: bigint,
-      minInitialAmountOut: bigint,
-      borrowUsdtAmount: bigint
-    ) => {
-      if (!walletClient || !address) throw new Error("Wallet not connected");
-      const tx = await walletClient.writeContract({
-        address: EXECUTOR_ADDRESS,
-        abi: EXECUTOR_ABI,
-        functionName: "executeFullLoop",
-        args: [
-          withdrawAmount,
-          initialAmount,
-          flashloanAmount,
-          minAmountOut,
-          minInitialAmountOut,
-          borrowUsdtAmount,
-        ],
-        account: address,
-      });
+  /** 
+    function executeFullEvmFlow(uint256 minAmountOut, uint256 minInitialAmountOut, uint256 targetLoopValue) */
 
-      await waitForTransactionReceipt(walletClient, {
-        hash: tx as `0x${string}`,
-      });
-      return tx;
-    },
-    [walletClient, address]
-  );
+  const executeEvmFlow = useCallback(async () => {
+    if (!walletClient || !address) throw new Error("Wallet not connected");
+
+    const slippageBps = 100; // 1% slippage
+
+    // const minAmountOut = getSlippageAdjustedAmount(
+    //   expectedUsdtOut,
+    //   slippageBps
+    // );
+    // const minInitialAmountOut = getSlippageAdjustedAmount(
+    //   expectedHypeOut,
+    //   slippageBps
+    // );
+
+    // targetLoopValue could be user input (e.g., 150 USDT)
+    const targetLoopValue = 150_000_000n;
+
+    const tx = await walletClient.writeContract({
+      address: EXECUTOR_ADDRESS,
+      abi: EXECUTOR_ABI,
+      functionName: "executeFullEvmFlow",
+      args: [1, 1, targetLoopValue],
+      account: address,
+    });
+
+    await waitForTransactionReceipt(walletClient, {
+      hash: tx as `0x${string}`,
+    });
+    return tx;
+  }, [walletClient, address]);
 
   return {
     executeEvmFlow,
   };
+}
+
+function getSlippageAdjustedAmount(
+  amount: bigint,
+  slippageBps: number
+): bigint {
+  const maxBps = 10_000n;
+  return (amount * BigInt(10_000 - slippageBps)) / maxBps;
 }
