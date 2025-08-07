@@ -223,7 +223,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
       try {
         let price;
         if (currentStep === 1) {
-          price = await hyperliquid.getAssetPrice('TZERO', false);
+          price = await hyperliquid.getAssetPrice('USDT0', false);
         }
         else {
           price = await hyperliquid.getAssetPrice('HYPE', true);
