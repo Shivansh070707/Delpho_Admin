@@ -66,7 +66,8 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
   const {
     getAssetPerpPosition,
     getSpotBalance,
-    getPerpWithdrawableBalance
+    getPerpWithdrawableBalance,
+    fetchCompleteState
   } = useHyperliquid();
 
   const hyperliquid = createHyperliquidClient({ testnet: false });
@@ -119,16 +120,15 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
       const parsedSize = parseUnits(data.positionSize.toString(), decimals);
 
       await swapUSDCToUSDT(data.isBuy as boolean, parsedPrice, parsedSize);
+      await fetchCompleteState();
 
       setStepCompletionStatus((prev) => ({ ...prev, 1: true }));
       setStepData(data);
       setCurrentStep(2);
-      alert("Swap completed successfully!");
+
     } catch (error) {
       console.error("Swap failed:", error);
-      alert(
-        `Swap failed: ${error instanceof Error ? error.message : String(error)}`
-      );
+
       throw error;
     } finally {
       setIsLoading(false);
@@ -149,14 +149,12 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
       } else {
         await transferUSDCToSpot(parsedAmount);
       }
+      await fetchCompleteState();
 
       return true;
     } catch (error) {
       console.error("Transfer failed:", error);
-      alert(
-        `Transfer failed: ${error instanceof Error ? error.message : String(error)
-        }`
-      );
+
       throw error;
     } finally {
       setIsLoading(false);
@@ -196,18 +194,16 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
           parsedPrice,
           parsedSize
         );
+        await fetchCompleteState();
 
         setStepData(positionData);
         setStepCompletionStatus((prev) => ({ ...prev, 3: true }));
         setIsModalOpen(false);
-        alert("Position opened successfully!");
+
       }
     } catch (error) {
       console.error("Error in handleModalSubmit:", error);
-      alert(
-        `Operation failed: ${error instanceof Error ? error.message : String(error)
-        }`
-      );
+
     } finally {
       setIsLoading(false);
     }
@@ -267,7 +263,8 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
       slippage: 0.0001,
       collateral: Number(getPerpWithdrawableBalance()),
       positionSize: Number(getSpotBalance("USDC")),
-
+      amount: Number(getSpotBalance("USDC")),
+      leverage: 4
     });
     const [isPriceLoading, setIsPriceLoading] = useState(false);
 
@@ -363,11 +360,6 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
         const minOrder = calculateMinOrderValue(price);
 
         if (positionSize < minOrder) {
-          alert(
-            `Order size too small. Minimum order is ${minOrder.toFixed(
-              2
-            )} tokens at this price.`
-          );
           return;
         }
 
@@ -378,6 +370,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
         };
         handleModalSubmit(stepData);
       } else if (currentStep === 2) {
+
         const transferData: TransferData = {
           amount: formData.amount as number,
           direction: formData.direction as "toPerp" | "toSpot",
@@ -562,7 +555,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                   min="0"
                   step="0.01"
                   className="w-full px-3 py-2 bg-[#1A2323] border border-[#2A3333] rounded-lg text-[#E6FFF6] focus:outline-none focus:border-[#00FFB2] cursor-text"
-                  placeholder={`Enter USDT amount`}
+                  placeholder={`Enter USDC amount`}
                 />
                 <div className="space-y-1 mt-2">
                   <div className="flex justify-between text-xs text-[#A3B8B0]">
@@ -607,7 +600,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                 <input
                   type="number"
                   value={
-                    typeof formData.amount === "number" && formData.amount !== 0
+                    typeof formData.amount === "number"
                       ? formData.amount
                       : formData.direction === "toPerp"
                         ? Number(getSpotBalance("USDC"))
@@ -649,9 +642,13 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    onClick={() =>
-                      setFormData({ ...formData, direction: "toPerp" })
-                    }
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        direction: "toPerp",
+                        amount: Number(getSpotBalance("USDC"))
+                      });
+                    }}
                     className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${formData.direction === "toPerp"
                       ? "bg-[#00FFB2] text-[#0B1212]"
                       : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
@@ -661,9 +658,13 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                   </button>
                   <button
                     type="button"
-                    onClick={() =>
-                      setFormData({ ...formData, direction: "toSpot" })
-                    }
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        direction: "toSpot",
+                        amount: Number(getPerpWithdrawableBalance())
+                      });
+                    }}
                     className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${formData.direction === "toSpot"
                       ? "bg-[#00FFB2] text-[#0B1212]"
                       : "bg-[#1A2323] text-[#A3B8B0] hover:bg-[#2A3333] hover:text-[#E6FFF6]"
@@ -675,6 +676,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
               </div>
             </div>
           );
+
         case 3:
           return (
             <div className="space-y-4">
@@ -683,7 +685,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                   Position Type
                 </label>
                 <div className="flex gap-2">
-                  <button
+                  {/* <button
                     type="button"
                     onClick={() => handleIsLongChange(true)}
                     className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${formData.isLong === true
@@ -692,7 +694,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                       }`}
                   >
                     Buy / Long
-                  </button>
+                  </button> */}
                   <button
                     type="button"
                     onClick={() => handleIsLongChange(false)}
@@ -718,7 +720,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                       min="1"
                       max="10"
                       step="0.1"
-                      value={formData.leverage || 1}
+                      value={formData.leverage || 4}
                       onChange={(e) => {
                         const leverage = parseFloat(e.target.value);
                         setFormData({
@@ -743,7 +745,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                       min="1"
                       max="10"
                       step="0.1"
-                      value={formData.leverage || 1}
+                      value={formData.leverage || 4}
                       onChange={(e) => {
                         const value = e.target.value;
                         if (value === "") {
@@ -789,7 +791,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                 <div className="flex justify-between text-sm">
                   <span className="text-[#A3B8B0]">Position Size</span>
                   <span className="text-[#E6FFF6]">
-                    {Number(formData.availableToTrade || 0).toFixed(2)} USDT
+                    {Number(formData.availableToTrade! * formData.leverage! || 0).toFixed(2)} USDC
                   </span>
                 </div>
               </div>
@@ -888,7 +890,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
               {/* Collateral input (USDT Amount) */}
               <div>
                 <label className="block text-sm font-medium text-[#E6FFF6] mb-2">
-                  Enter USDT Amount
+                  Enter USDC Amount
                 </label>
                 <input
                   type="number"
@@ -915,7 +917,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                     }
                   }}
                   className="w-full px-3 py-2 bg-[#1A2323] border border-[#2A3333] rounded-lg text-[#E6FFF6] focus:outline-none focus:border-[#00FFB2] cursor-text"
-                  placeholder="Enter USDT amount"
+                  placeholder="Enter USDC amount"
                 />
               </div>
             </div>
