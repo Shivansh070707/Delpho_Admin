@@ -184,10 +184,11 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
 
         const decimals = tokenDetails.szDecimals;
         const parsedPrice = parseUnits(positionData.price.toString(), decimals);
+        
         const parsedSize = parseUnits(
           positionData.positionSize.toString(),
           decimals
-        );
+        );     
 
         await openHypePosition(
           positionData.isLong ?? true,
@@ -378,10 +379,12 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
 
         handleModalSubmit(transferData as TransferData);
       } else if (currentStep === 3) {
+       
+        
         const stepData: StepData = {
           isLong: formData.isLong as boolean,
           price: formData.price as number,
-          positionSize: formData.positionSize as number,
+          positionSize: (formData.collateral! * formData.leverage! ) as number,
         };
         handleModalSubmit(stepData);
       }
