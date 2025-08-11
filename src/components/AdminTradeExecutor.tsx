@@ -116,6 +116,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
       if (!tokenDetails) throw new Error("Could not fetch USDC token details");
 
       const decimals = tokenDetails.szDecimals;
+
       const parsedPrice = parseUnits(data.price.toString(), decimals);
       const parsedSize = parseUnits(data.positionSize.toString(), decimals);
 
@@ -184,11 +185,11 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
 
         const decimals = tokenDetails.szDecimals;
         const parsedPrice = parseUnits(positionData.price.toString(), decimals);
-        
+
         const parsedSize = parseUnits(
           positionData.positionSize.toString(),
           decimals
-        );     
+        );
 
         await openHypePosition(
           positionData.isLong ?? true,
@@ -261,7 +262,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
       position: getAssetPerpPosition("HYPE"),
       currentPosition: 0,
       direction: "toPerp",
-      slippage: 0.0001,
+      slippage: 0.001,
       collateral: Number(getPerpWithdrawableBalance()),
       positionSize: Number(getSpotBalance("USDC")),
       amount: Number(getSpotBalance("USDC")),
@@ -379,12 +380,12 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
 
         handleModalSubmit(transferData as TransferData);
       } else if (currentStep === 3) {
-       
-        
+
+
         const stepData: StepData = {
           isLong: formData.isLong as boolean,
           price: formData.price as number,
-          positionSize: (formData.collateral! * formData.leverage! ) as number,
+          positionSize: (formData.collateral! * formData.leverage!) as number,
         };
         handleModalSubmit(stepData);
       }
@@ -398,9 +399,15 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
     };
     const isAmountValid = () => {
       if (currentStep === 1) {
-        const price = formData.price as number;
-        const positionSize = formData.positionSize as number;
-        return price && positionSize >= calculateMinOrderValue(price);
+        const price = Number(formData.price) as number;
+        const minOrder = calculateMinOrderValue(price);
+
+        if (formData.isBuy) {
+          return (Number(getSpotBalance("USDC")) / price) >= minOrder;
+        } else {
+
+          return (Number(getSpotBalance("USDT0")) * price) >= minOrder;
+        }
       }
       return true;
     };
@@ -444,7 +451,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                     type="number"
                     min="0"
                     max="10"
-                    step="0.001"
+                    step="0.01"
                     value={
                       typeof formData.slippage === "number"
                         ? formData.slippage * 100
@@ -536,7 +543,9 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                 <input
                   type="number"
                   value={
-                    formData.isBuy ? (Number(getSpotBalance("USDC")) / formData.price!).toFixed(4) : getSpotBalance("USDT0").toFixed(4)
+                    formData.isBuy
+                      ? (Number(getSpotBalance("USDC")) / formData.price!).toFixed(4)
+                      : (Number(getSpotBalance("USDT0")) * formData.price!).toFixed(4)
                   }
                   onChange={(e) => {
                     const value = e.target.value;
@@ -556,9 +565,9 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                     }
                   }}
                   min="0"
-                  step="0.01"
+                  step="any"
                   className="w-full px-3 py-2 bg-[#1A2323] border border-[#2A3333] rounded-lg text-[#E6FFF6] focus:outline-none focus:border-[#00FFB2] cursor-text"
-                  placeholder={`Enter USDC amount`}
+                  placeholder={`Enter ${formData.isBuy ? 'USDT' : 'USDC'} amount`}
                 />
                 <div className="space-y-1 mt-2">
                   <div className="flex justify-between text-xs text-[#A3B8B0]">
@@ -574,6 +583,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                     </span>
                   </div>
                 </div>
+
                 {typeof formData.price === "number" &&
                   !isNaN(formData.price) && (
                     <p className="text-xs mt-2">
@@ -581,8 +591,8 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                       {calculateMinOrderValue(formData.price).toFixed(2)}{" "}
                       {formData.isBuy ? "USDT" : "USDC"}
                       {typeof formData.positionSize === "number" &&
-                        !isNaN(formData.positionSize) &&
-                        formData.positionSize <
+                        !isNaN(Number(formData.positionSize)) &&
+                        Number(formData.positionSize) <
                         calculateMinOrderValue(formData.price) && (
                           <span className="text-red-500 ml-2">
                             Amount too small!
@@ -807,7 +817,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                     type="number"
                     min="0"
                     max="10"
-                    step="0.001"
+                    step="0.01"
                     value={
                       typeof formData.slippage === "number"
                         ? formData.slippage * 100
