@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEvmActions } from "../hooks/useEvmActions";
+import { parseUnits } from "viem";
+import { useCoreActions } from "../hooks/useCoreActions";
+import { useHyperliquid } from "../hooks/useHyperliquidData";
+import { createHyperliquidClient } from "../utils/hyperliquid";
+import { calculatePriceWithSlippage } from "../utils/helper";
 
 const LoopCycleExecutor = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -8,43 +13,120 @@ const LoopCycleExecutor = () => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const { executeEvmFlow } = useEvmActions();
+  const {
+    swapUSDCToUSDT,
+    transferUSDCToPerp,
+    openHypePosition,
+  } = useCoreActions();
+  const { getSpotBalance, getPerpWithdrawableBalance } = useHyperliquid();
 
   const executionSteps = [
+    // EVM Flow Steps
     "Pulls HYPE from the vault",
     "Supplies 20% of HYPE to HyperLend",
     "Borrows 50% of supplied value in USDT",
     "Transfers borrowed USDT to core",
     "Remaining HYPE + flashloan to open a leveraged loop position",
+    
+    // Core Flow Steps
+    "Swap USDT to USDC on Spot",
+    "Transfer USDC to Perp Account",
+    "Open Short Position on HYPE"
   ];
 
-  const executeLoopCycle = async () => {
-    setIsLoading(true);
-    setCurrentStep(0);
-    setIsModalOpen(true);
+  const hyperliquid = createHyperliquidClient({ testnet: false });
 
+  const executeCoreFlow = async () => {
     try {
-      console.log("Executing loop cycle");
+      // Step 6: Swap USDT to USDC
+      setCurrentStep(5);
+      const usdtBalance = Number(getSpotBalance("USDT0"));
+      let tokenDetails = await hyperliquid.getTokenDetailsByName("USDT0");
+      if (!tokenDetails) throw new Error("Could not fetch USDT token details");
 
-      // Simulate step progression
-      for (let i = 0; i < executionSteps.length; i++) {
-        setCurrentStep(i);
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // 1 second per step
-      }
+      let decimals = tokenDetails.szDecimals;
+      let parsedSize = parseUnits(usdtBalance.toString(), decimals);
+      const usdtPrice = await hyperliquid.getAssetPrice("USDT0", false);
+      let price = calculatePriceWithSlippage(usdtPrice as number, 0.01, false); //1% slippage
+    
+      let parsedPrice = parseUnits(price.toString(), decimals);
 
-      await executeEvmFlow();
+      await swapUSDCToUSDT(false, parsedPrice, parsedSize);
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      alert("Loop cycle executed successfully!");
+      // Step 7: Transfer USDC to Perp
+      setCurrentStep(6);
+      const usdcBalance = Number(getSpotBalance("USDC")).toFixed(2);
+      const transferAmount = parseUnits(usdcBalance.toString(), 6); // USDC has 6 decimals
+      await transferUSDCToPerp(transferAmount);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Step 8: Open Short Position
+      setCurrentStep(7);
+      const perpBalance = Number(getPerpWithdrawableBalance());
+      console.log(perpBalance, 'perpBalance');
+
+      const leverage = 4; // 4x leverage
+      const positionSize = perpBalance * leverage;
+      console.log(positionSize, 'positionSize');
+
+      const hypePrice = await hyperliquid.getAssetPrice("HYPE", true);
+      price = calculatePriceWithSlippage(hypePrice as number, 0.01, false); //1% slippage
+      
+      tokenDetails = await hyperliquid.getTokenDetailsByName("USDC");
+      if (!price) throw new Error("Could not fetch HYPE price");
+      if (!tokenDetails)
+        throw new Error("Could not fetch HYPE token details");
+      decimals = tokenDetails.szDecimals;
+      parsedPrice = parseUnits(price.toString(), decimals);
+      const convertedSize = positionSize / price;
+
+      parsedSize = parseUnits(
+        convertedSize.toString(),
+        decimals
+      );
+
+      await openHypePosition(
+        false,
+        parsedPrice,
+        parsedSize
+      );
+
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      alert("Full loop cycle executed successfully!");
     } catch (error) {
-      console.error("Loop cycle failed:", error);
+      console.error("Core flow failed:", error);
       alert(
-        `Loop cycle failed: ${
-          error instanceof Error ? error.message : String(error)
+        `Core flow failed: ${error instanceof Error ? error.message : String(error)
         }`
       );
     } finally {
       setIsLoading(false);
       setIsModalOpen(false);
       setCurrentStep(0);
+    }
+  };
+
+  const executeFullLoopCycle = async () => {
+    setIsLoading(true);
+    setCurrentStep(0);
+    setIsModalOpen(true);
+
+    try {
+      // Execute EVM Flow (steps 1-5)
+      await executeEvmFlow();
+      
+      // Execute Core Flow (steps 6-8)
+      await executeCoreFlow();
+    } catch (error) {
+      console.error("Full loop cycle failed:", error);
+      alert(
+        `Full loop cycle failed: ${error instanceof Error ? error.message : String(error)}`
+      );
+    } finally {
+      setIsLoading(false);
+      setIsModalOpen(false);
     }
   };
 
@@ -69,7 +151,7 @@ const LoopCycleExecutor = () => {
               <div className="text-center">
                 <div className="mb-6">
                   <h3 className="text-xl font-semibold text-[#E6FFF6] mb-2">
-                    Executing EVM Strategy Flow
+                    Executing Full Loop Cycle
                   </h3>
                   <p className="text-[#A3B8B0] text-sm">
                     Please wait while the transaction is being processed...
@@ -95,29 +177,26 @@ const LoopCycleExecutor = () => {
                         x: 0,
                       }}
                       transition={{ delay: index * 0.1 }}
-                      className={`flex items-center space-x-3 p-3 rounded-lg ${
-                        index <= currentStep
-                          ? "bg-[#1A2323] border border-[#00FFB2]/20"
-                          : "bg-[#0B1212]"
-                      }`}
+                      className={`flex items-center space-x-3 p-3 rounded-lg ${index <= currentStep
+                        ? "bg-[#1A2323] border border-[#00FFB2]/20"
+                        : "bg-[#0B1212]"
+                        }`}
                     >
                       <div
-                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                          index < currentStep
-                            ? "bg-[#00FFB2] text-[#0B1212]"
-                            : index === currentStep
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${index < currentStep
+                          ? "bg-[#00FFB2] text-[#0B1212]"
+                          : index === currentStep
                             ? "bg-[#00FFB2] text-[#0B1212] animate-pulse"
                             : "bg-[#1A2323] text-[#A3B8B0]"
-                        }`}
+                          }`}
                       >
                         {index < currentStep ? "✓" : index + 1}
                       </div>
                       <span
-                        className={`text-sm ${
-                          index <= currentStep
-                            ? "text-[#E6FFF6]"
-                            : "text-[#A3B8B0]"
-                        }`}
+                        className={`text-sm ${index <= currentStep
+                          ? "text-[#E6FFF6]"
+                          : "text-[#A3B8B0]"
+                          }`}
                       >
                         {step}
                       </span>
@@ -162,7 +241,7 @@ const LoopCycleExecutor = () => {
       <div className="bg-[#0B1212] rounded-xl p-6 mb-6">
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-[#E6FFF6]">
-            EVM Strategy Flow
+            Full Strategy Flow
           </h3>
           <p className="text-[#A3B8B0] text-sm">
             Automated execution of the complete leveraged loop cycle
@@ -183,13 +262,13 @@ const LoopCycleExecutor = () => {
 
       <div className="flex gap-4">
         <motion.button
-          onClick={executeLoopCycle}
+          onClick={executeFullLoopCycle}
           disabled={isLoading}
           className="px-6 py-3 bg-[#00FFB2] text-[#0B1212] rounded-lg font-semibold hover:bg-[#00E6A3] transition-colors disabled:opacity-50 cursor-pointer"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          {isLoading ? "Executing..." : "Start Loop Cycle"}
+          {isLoading ? "Executing..." : "Start Full Loop Cycle"}
         </motion.button>
       </div>
 

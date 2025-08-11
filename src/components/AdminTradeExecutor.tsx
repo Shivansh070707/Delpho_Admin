@@ -113,12 +113,17 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
     setIsLoading(true);
     try {
       const tokenDetails = await hyperliquid.getTokenDetailsByName("USDC");
+      const usdc_balance = getSpotBalance("USDC").toFixed(2);
+      const usdt_balance = getSpotBalance("USDT0").toFixed(2);
+
       if (!tokenDetails) throw new Error("Could not fetch USDC token details");
 
       const decimals = tokenDetails.szDecimals;
 
       const parsedPrice = parseUnits(data.price.toString(), decimals);
-      const parsedSize = parseUnits(data.positionSize.toString(), decimals);
+      const parsedSize = data.isBuy ? parseUnits(usdc_balance.toString(), decimals) : parseUnits(usdt_balance.toString(), decimals);
+
+      
 
       await swapUSDCToUSDT(data.isBuy as boolean, parsedPrice, parsedSize);
       await fetchCompleteState();
@@ -143,7 +148,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
       if (!tokenDetails) throw new Error("Could not fetch USDC token details");
 
       const decimals = 6;
-      const parsedAmount = parseUnits(data.amount.toString(), decimals);
+      const parsedAmount = parseUnits(data.amount.toFixed(2).toString(), decimals);
 
       if (data.direction === "toPerp") {
         await transferUSDCToPerp(parsedAmount);
@@ -185,9 +190,14 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
 
         const decimals = tokenDetails.szDecimals;
         const parsedPrice = parseUnits(positionData.price.toString(), decimals);
+        const convertedSize = positionData.positionSize / positionData.price
+        console.log(decimals,'decimals');
+        console.log(parsedPrice, 'parsedPrice');
+        console.log(convertedSize,'convertedSize');
+        
 
         const parsedSize = parseUnits(
-          positionData.positionSize.toString(),
+          convertedSize.toString(),
           decimals
         );
 
@@ -356,12 +366,19 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
+    
       if (currentStep === 1) {
         const price = formData.price as number;
-        const positionSize = formData.positionSize as number;
+        const positionSize = Number(formData.positionSize) as number;
         const minOrder = calculateMinOrderValue(price);
+        let isValid;
+        if (formData.isBuy) {
+          isValid= (Number(getSpotBalance("USDC")) / price) >= minOrder;
+        } else {
+          isValid= (Number(getSpotBalance("USDT0")) * price) >= minOrder;
+        }
 
-        if (positionSize < minOrder) {
+        if (!isValid) {
           return;
         }
 
@@ -370,6 +387,8 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
           price: price,
           positionSize: positionSize,
         };
+      
+        
         handleModalSubmit(stepData);
       } else if (currentStep === 2) {
 
@@ -384,7 +403,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
 
         const stepData: StepData = {
           isLong: formData.isLong as boolean,
-          price: formData.price as number,
+          price: Number(formData.price) as number,
           positionSize: (formData.collateral! * formData.leverage!) as number,
         };
         handleModalSubmit(stepData);
@@ -590,10 +609,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                       Minimum order:{" "}
                       {calculateMinOrderValue(formData.price).toFixed(2)}{" "}
                       {formData.isBuy ? "USDT" : "USDC"}
-                      {typeof formData.positionSize === "number" &&
-                        !isNaN(Number(formData.positionSize)) &&
-                        Number(formData.positionSize) <
-                        calculateMinOrderValue(formData.price) && (
+                      {!isAmountValid() && (
                           <span className="text-red-500 ml-2">
                             Amount too small!
                           </span>
