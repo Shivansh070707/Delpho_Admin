@@ -148,7 +148,8 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
       if (!tokenDetails) throw new Error("Could not fetch USDC token details");
 
       const decimals = 6;
-      const parsedAmount = parseUnits(data.amount.toFixed(2).toString(), decimals);
+      const truncatedAmount = Math.floor(data.amount * 100) / 100;
+      const parsedAmount = parseUnits(truncatedAmount.toFixed(2), decimals);
 
       if (data.direction === "toPerp") {
         await transferUSDCToPerp(parsedAmount);
@@ -189,18 +190,14 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
           throw new Error("Could not fetch HYPE token details");
 
         const decimals = tokenDetails.szDecimals;
-        const parsedPrice = parseUnits(positionData.price.toString(), decimals);
-        const convertedSize = positionData.positionSize / positionData.price
-        console.log(decimals,'decimals');
-        console.log(parsedPrice, 'parsedPrice');
-        console.log(convertedSize,'convertedSize');
-        
+        const parsedPrice = parseUnits(positionData.price.toFixed(2).toString(), decimals);
+        const convertedSize = positionData.positionSize.toFixed(2)
 
         const parsedSize = parseUnits(
           convertedSize.toString(),
           decimals
         );
-
+ 
         await openHypePosition(
           positionData.isLong ?? true,
           parsedPrice,
@@ -272,7 +269,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
       position: getAssetPerpPosition("HYPE"),
       currentPosition: 0,
       direction: "toPerp",
-      slippage: 0.001,
+      slippage: 0.01,
       collateral: Number(getPerpWithdrawableBalance()),
       positionSize: Number(getSpotBalance("USDC")),
       amount: Number(getSpotBalance("USDC")),
