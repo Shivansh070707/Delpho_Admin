@@ -5,7 +5,7 @@ import { parseUnits } from "viem";
 import { useCoreActions } from "../hooks/useCoreActions";
 import { useHyperliquid } from "../hooks/useHyperliquidData";
 import { createHyperliquidClient } from "../utils/hyperliquid";
-import { calculatePriceWithSlippage } from "../utils/helper";
+import { calculatePriceWithSlippage, getUserPerpWithdrawableBalance,getUserSpotBalance } from "../utils/helper";
 
 const LoopCycleExecutor = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,8 +17,10 @@ const LoopCycleExecutor = () => {
     swapUSDCToUSDT,
     transferUSDCToPerp,
     openHypePosition,
+    
   } = useCoreActions();
-  const { getSpotBalance, getPerpWithdrawableBalance } = useHyperliquid();
+  const { getSpotBalance,fetchCompleteState ,getUserState } = useHyperliquid();
+
 
   const executionSteps = [
     // EVM Flow Steps
@@ -40,8 +42,8 @@ const LoopCycleExecutor = () => {
     try {
       // Step 6: Swap USDT to USDC
       setCurrentStep(5);
-      const usdtBalance = Number(getSpotBalance("USDT0"));
-      let tokenDetails = await hyperliquid.getTokenDetailsByName("USDT0");
+      const usdtBalance = Number(getSpotBalance("USDT0")).toFixed(2);
+      let tokenDetails = await hyperliquid.getTokenDetailsByName("USDC");
       if (!tokenDetails) throw new Error("Could not fetch USDT token details");
 
       let decimals = tokenDetails.szDecimals;
@@ -52,28 +54,34 @@ const LoopCycleExecutor = () => {
       let parsedPrice = parseUnits(price.toString(), decimals);
 
       await swapUSDCToUSDT(false, parsedPrice, parsedSize);
+      const { balances: postSwapBalances } = await getUserState();
+      
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Step 7: Transfer USDC to Perp
       setCurrentStep(6);
 
-      const usdcBalance = Number(getSpotBalance("USDC")).toFixed(2);
+      const usdcBalance = Number(getUserSpotBalance(postSwapBalances!,"USDC"));
+
+      
       const truncatedAmount = Math.floor(Number(usdcBalance) * 100) / 100;
-      const transferAmount = parseUnits(truncatedAmount.toString(), 6); // USDC has 6 decimals
+      const transferAmount = parseUnits(truncatedAmount.toFixed(2).toString(), 6); 
       await transferUSDCToPerp(transferAmount);
+      const { positions: postTransferBalances } = await getUserState();
+
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Step 8: Open Short Position
       setCurrentStep(7);
-      const perpBalance = Number(getPerpWithdrawableBalance());
-      console.log(perpBalance, 'perpBalance');
+      const perpBalance = Number(getUserPerpWithdrawableBalance(postTransferBalances!));
+
 
       const leverage = 4; // 4x leverage
       const positionSize = perpBalance * leverage;
-      console.log(positionSize, 'positionSize');
+   
 
       const hypePrice = await hyperliquid.getAssetPrice("HYPE", true);
-      price = calculatePriceWithSlippage(hypePrice as number, 0.1, false); //1% slippage
+      price = calculatePriceWithSlippage(hypePrice as number, 0.01, false); //1% slippage
       
       tokenDetails = await hyperliquid.getTokenDetailsByName("USDC");
       if (!price) throw new Error("Could not fetch HYPE price");
@@ -82,9 +90,11 @@ const LoopCycleExecutor = () => {
       decimals = tokenDetails.szDecimals;
       parsedPrice = parseUnits(price.toFixed(2).toString(), decimals);
       const convertedSize = positionSize;
+    
+      
 
       parsedSize = parseUnits(
-        convertedSize.toString(),
+        convertedSize.toFixed(2).toString(),
         decimals
       );
 
@@ -93,6 +103,7 @@ const LoopCycleExecutor = () => {
         parsedPrice,
         parsedSize
       );
+      await fetchCompleteState();
 
       await new Promise(resolve => setTimeout(resolve, 1000));
 

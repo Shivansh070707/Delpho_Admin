@@ -185,13 +185,54 @@ export const useHyperliquid = () => {
             dispatch(setLoading(false));
         }
     };
+    const updateBalance = async (): Promise<boolean> => {
+        try {
+            dispatch(setLoading(true));
+
+            const { balances, positions } = await hyperliquidClient.getUserState(EXECUTOR_ADDRESS);
+
+            dispatch(updateBalances(balances));
+            dispatch(updatePositions(positions));
+            
+            return true;
+        } catch (err) {
+            console.error("Error updating both spot and perp:", err);
+            dispatch(
+                setError("Failed to update both spot and perpetual data. Please try again later.")
+            );
+            return false;
+        } finally {
+            dispatch(setLoading(false));
+        }
+    };
+
+    const getUserState = async (testnet: boolean = false) => {
+        try {
+            const hyperliquidClient = createHyperliquidClient({ testnet });
+            const userState = await hyperliquidClient.getUserState(EXECUTOR_ADDRESS);
+
+            return {
+                success: true,
+                balances: userState.balances,
+                positions: userState.positions
+            };
+        } catch (err) {
+            console.error("Error fetching user state:", err);
+            return {
+                success: false,
+                error: "Failed to fetch user state"
+            };
+        }
+    };
 
     return {
         ...hyperliquidState,
+        getUserState,
         getSpotBalance,
         fetchCompleteState,
         fetchBalances,
         fetchPositions,
+        updateBalance,
         fetchOpenOrders,
         fetchTradeHistory,
         fetchFundingHistory,
