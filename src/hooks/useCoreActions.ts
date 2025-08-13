@@ -48,6 +48,27 @@ export function useCoreActions() {
     },
     [walletClient, address]
   );
+  const closeHypeShort = useCallback(
+    async (limitPrice: bigint, size: bigint) => {
+      console.log(limitPrice, 'limitPrice');
+      console.log(size,'size');
+      
+      if (!walletClient || !address) throw new Error("Wallet not connected");
+
+      const tx = await walletClient.writeContract({
+        address: EXECUTOR_ADDRESS,
+        abi: EXECUTOR_ABI,
+        functionName: "closeHypeShort",
+        args: [limitPrice, size],
+        account: address,
+      });
+      await waitForTransactionReceipt(walletClient, {
+        hash: tx as `0x${string}`,
+      });
+      return tx;
+    },
+    [walletClient, address]
+  );
 
   const createOrder = useCallback(
     async (
@@ -181,6 +202,7 @@ export function useCoreActions() {
     swapUSDCToUSDT,
     openHypeShort,
     transferUSDTToEVM,
+    closeHypeShort,
     constants: {
       TOKEN_IDS,
       MARKET_IDS,

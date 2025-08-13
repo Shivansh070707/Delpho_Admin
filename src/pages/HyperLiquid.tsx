@@ -10,10 +10,14 @@ import {
   type UserFills,
   type UserFunding,
   type HistoricalOrder,
-  type SpotClearinghouseState
+  type SpotClearinghouseState,
+  type Position
 } from "../utils/hyperliquid";
-import { resolveCoinName, sortDirection } from "../utils/helper";
+import { calculatePriceWithSlippage, resolveCoinName, sortDirection } from "../utils/helper";
 import { useHyperliquid } from "../hooks/useHyperliquidData";
+import { parseUnits } from "viem";
+import { useCoreActions } from "../hooks/useCoreActions";
+import { createHyperliquidClient } from "../utils/hyperliquid";
 
 const TABS = [
   "Balances",
@@ -32,12 +36,14 @@ interface TableData {
 }
 
 interface TableRow {
-  [key: string]: string | number | boolean;
+  [key: string]: string | number | boolean | React.ReactNode | Position;
 }
 
 const HyperLiquid: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>(TABS[0]);
-
+  const [isClosing, setIsClosing] = useState(false);
+  const hyperliquid = createHyperliquidClient({ testnet: false });
+  const { closeHypeShort } = useCoreActions();
 
   const {
     balances,
@@ -55,8 +61,6 @@ const HyperLiquid: React.FC = () => {
   useEffect(() => {
     fetchCompleteState();
   }, []);
-
-
 
   const transformBalances = (balances: SpotClearinghouseState): TableRow[] => {
     if (!balances?.balances) return [];
@@ -76,6 +80,8 @@ const HyperLiquid: React.FC = () => {
   };
 
   const transformPositions = (positions: ClearinghouseState): TableRow[] => {
+    if (!positions?.assetPositions) return [];
+    
     return positions.assetPositions.map(position => ({
       coin: position.position?.coin || '-',
       size: position.position?.szi ? Math.abs(parseFloat(position.position.szi)).toFixed(4) : '0.0000',
@@ -87,7 +93,19 @@ const HyperLiquid: React.FC = () => {
       liqPrice: position.position?.liquidationPx ? `$${parseFloat(position.position.liquidationPx).toFixed(2)}` : '$0.00',
       margin: position.position?.marginUsed ? `$${parseFloat(position.position.marginUsed).toFixed(2)}` : '$0.00',
       funding: position.position?.cumFunding?.allTime ?
-        `$${parseFloat(position.position.cumFunding.allTime).toFixed(4)}` : '$0.0000'
+        `$${parseFloat(position.position.cumFunding.allTime).toFixed(4)}` : '$0.0000',
+      rawSize: position.position?.szi ? position.position.szi : '0',
+      rawCoin: position.position?.coin || '',
+      rawPosition: position.position,
+      action: position.position?.szi ? (
+        <button
+          onClick={() => handleClosePosition(position.position)}
+          disabled={isClosing}
+          className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors disabled:opacity-50"
+        >
+          {isClosing ? "Closing..." : "Close"}
+        </button>
+      ) : null
     }));
   };
 
@@ -180,6 +198,31 @@ const HyperLiquid: React.FC = () => {
       orderId: order.order?.oid ? order.order.oid.toString() : '-'
     }));
   };
+
+  const handleClosePosition = async (position: Position) => {
+    if (!position?.coin || !position?.szi) return;
+    
+    setIsClosing(true);
+    try {
+      const midPrice = await hyperliquid.getAssetPrice(position.coin, true);
+      if (!midPrice) throw new Error("Could not fetch price");
+
+      const isLong = parseFloat(position.szi) > 0;
+      const closePrice = calculatePriceWithSlippage(midPrice, 0.01, !isLong);
+
+      await closeHypeShort(
+        parseUnits(closePrice.toFixed(2), 8),
+        parseUnits(Math.abs(parseFloat(position.szi)).toString(), 8)
+      );
+
+      await fetchCompleteState();
+    } catch (error) {
+      console.error("Error closing position:", error);
+    } finally {
+      setIsClosing(false);
+    }
+  };
+
   const data: TableData = {
     Balances: transformBalances(balances),
     Positions: transformPositions(positions),
@@ -189,6 +232,7 @@ const HyperLiquid: React.FC = () => {
     "Funding History": transformFundingHistory(fundingHistory),
     "Order History": transformOrderHistory(orderHistory)
   };
+
   const columns = {
     Balances: [
       { label: "Coin", key: "coin" },
@@ -208,6 +252,7 @@ const HyperLiquid: React.FC = () => {
       { label: "Liq. Price", key: "liqPrice" },
       { label: "Margin", key: "margin" },
       { label: "Funding", key: "funding" },
+      { label: "Action", key: "action" }
     ],
     "Open Orders": [
       { label: "Time", key: "time" },
@@ -358,7 +403,7 @@ const HyperLiquid: React.FC = () => {
                       >
                         {activeColumns.map((col) => (
                           <td key={col.key} className="py-2 px-4">
-                            {row[col.key]}
+                            {row[col.key] as string}
                           </td>
                         ))}
                       </motion.tr>

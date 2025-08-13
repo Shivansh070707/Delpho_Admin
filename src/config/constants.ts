@@ -19,6 +19,12 @@ export const ACTION_IDS = {
 export const TOKEN_IDS = {
   USDT: 1105n,
 } as const;
+export const PERP_IDS = {
+  HYPE:159,
+}
+export const SPOT_IDS = {
+  USDT:10_166,
+}
 
 export const MARKET_IDS = {
   USDT_USDC_SPOT: 11115,
