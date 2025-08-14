@@ -191,7 +191,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
 
         const decimals = tokenDetails.szDecimals;
         const parsedPrice = parseUnits(positionData.price.toFixed(2).toString(), decimals);
-        const convertedSize = positionData.positionSize.toFixed(2)
+        const convertedSize = (positionData.positionSize/positionData.price).toFixed(2)
 
         const parsedSize = parseUnits(
           convertedSize.toString(),

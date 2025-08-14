@@ -50,8 +50,7 @@ export function useCoreActions() {
   );
   const closeHypeShort = useCallback(
     async (limitPrice: bigint, size: bigint) => {
-      console.log(limitPrice, 'limitPrice');
-      console.log(size,'size');
+
       
       if (!walletClient || !address) throw new Error("Wallet not connected");
 

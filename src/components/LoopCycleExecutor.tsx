@@ -89,12 +89,11 @@ const LoopCycleExecutor = () => {
         throw new Error("Could not fetch HYPE token details");
       decimals = tokenDetails.szDecimals;
       parsedPrice = parseUnits(price.toFixed(2).toString(), decimals);
-      const convertedSize = positionSize;
+     
+      const convertedSize = (positionSize/price).toFixed(2)
     
-      
-
       parsedSize = parseUnits(
-        convertedSize.toFixed(2).toString(),
+        convertedSize.toString(),
         decimals
       );
 
