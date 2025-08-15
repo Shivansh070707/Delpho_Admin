@@ -79,7 +79,6 @@ const LoopCycleExecutor = () => {
       const leverage = 4; // 4x leverage
       const positionSize = perpBalance * leverage;
    
-
       const hypePrice = await hyperliquid.getAssetPrice("HYPE", true);
       price = calculatePriceWithSlippage(hypePrice as number, 0.01, false); //1% slippage
       

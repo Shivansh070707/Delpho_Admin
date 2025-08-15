@@ -123,8 +123,6 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
       const parsedPrice = parseUnits(data.price.toString(), decimals);
       const parsedSize = data.isBuy ? parseUnits(usdc_balance.toString(), decimals) : parseUnits(usdt_balance.toString(), decimals);
 
-      
-
       await swapUSDCToUSDT(data.isBuy as boolean, parsedPrice, parsedSize);
       await fetchCompleteState();
 
@@ -191,7 +189,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
 
         const decimals = tokenDetails.szDecimals;
         const parsedPrice = parseUnits(positionData.price.toFixed(2).toString(), decimals);
-        const convertedSize = (positionData.positionSize/positionData.price).toFixed(2)
+        const convertedSize = (positionData.positionSize).toFixed(2)
 
         const parsedSize = parseUnits(
           convertedSize.toString(),
@@ -735,70 +733,7 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
               </div>
 
               {/* Leverage slider */}
-              <div>
-                <label className="block text-sm font-medium text-[#E6FFF6] mb-2">
-                  Leverage (1-10x)
-                </label>
-                <div className="flex items-center gap-4">
-                  <div className="flex-1 relative">
-                    <input
-                      type="range"
-                      min="1"
-                      max="10"
-                      step="0.1"
-                      value={formData.leverage || 4}
-                      onChange={(e) => {
-                        const leverage = parseFloat(e.target.value);
-                        setFormData({
-                          ...formData,
-                          leverage: leverage,
-                          positionSize: (formData.collateral || 0) * leverage,
-                        });
-                      }}
-                      className="w-full h-3 bg-[#1A2323] rounded-full appearance-none cursor-pointer slider-thumb"
-                      style={{
-                        background: `linear-gradient(to right, #00FFB2 0%, #00FFB2 ${((formData.leverage || 1) - 1) * (100 / 9)
-                          }%, #2A3333 ${((formData.leverage || 1) - 1) * (100 / 9)
-                          }%, #2A3333 100%)`,
-                        boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.3)",
-                      }}
-                    />
-                    {/* Slider thumb styles remain the same */}
-                  </div>
-                  <div className="flex items-center gap-2 bg-[#1A2323] border border-[#2A3333] rounded-lg px-3 py-2 focus-within:border-[#00FFB2] transition-colors">
-                    <motion.input
-                      type="number"
-                      min="1"
-                      max="10"
-                      step="0.1"
-                      value={formData.leverage || 4}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (value === "") {
-                          setFormData({
-                            ...formData,
-                            leverage: 1,
-                            positionSize: formData.collateral || 0,
-                          });
-                        } else {
-                          const leverage = parseFloat(value);
-                          if (!isNaN(leverage)) {
-                            setFormData({
-                              ...formData,
-                              leverage: Math.min(Math.max(leverage, 1), 10),
-                              positionSize: (formData.collateral || 0) * Math.min(Math.max(leverage, 1), 10),
-                            });
-                          }
-                        }
-                      }}
-                      className="w-12 bg-transparent text-[#E6FFF6] text-center text-sm font-medium focus:outline-none"
-                      whileFocus={{ scale: 1.02 }}
-                      whileHover={{ scale: 1.01 }}
-                    />
-                    <span className="text-[#A3B8B0] text-sm font-medium">x</span>
-                  </div>
-                </div>
-              </div>
+      
 
               {/* Info display section */}
               <div className="space-y-2">
@@ -818,6 +753,12 @@ const AdminTradeExecutor: React.FC<AdminTradeExecutorProps> = ({
                   <span className="text-[#A3B8B0]">Position Size</span>
                   <span className="text-[#E6FFF6]">
                     {Number(formData.availableToTrade! * formData.leverage! || 0).toFixed(2)} USDC
+                  </span>
+                </div>
+                   <div className="flex justify-between text-sm">
+                  <span className="text-[#A3B8B0]">Leverage</span>
+                  <span className="text-[#E6FFF6]">
+                    4x
                   </span>
                 </div>
               </div>
