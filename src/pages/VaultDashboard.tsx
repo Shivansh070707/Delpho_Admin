@@ -4,20 +4,13 @@ import TopNav from "../components/TopNav";
 import { motion } from "framer-motion";
 import { useVaultData } from "../hooks/useVaultData";
 
-interface VaultMetrics {
-  totalCollateral: string;
-  totalBorrowed: string;
-  dusdMinted: string;
-}
-
 const VaultDashboard: React.FC = () => {
   const { data, isLoading, error } = useVaultData();
 
-  const VAULT_METRICS: VaultMetrics[] = data ? [{
-    totalCollateral: Number(data.totalCollateral).toFixed(3),
-    totalBorrowed: Number(data.totalBorrowed).toFixed(3),
-    dusdMinted: Number(data.dusdMinted).toFixed(3),
-  }] : [];
+
+  const formatDate = (timestamp: number) => {
+    return new Date(timestamp * 1000).toLocaleString();
+  };
 
   return (
     <div className="min-h-screen flex bg-[#101616] text-[#E6FFF6]">
@@ -33,32 +26,84 @@ const VaultDashboard: React.FC = () => {
           <div className="text-red-400 p-4 rounded bg-[#1A2323]">
             Error loading vault data
           </div>
-        ) : (
-          <div className="bg-[#0B1212] rounded-xl p-0 overflow-x-auto">
-            <table className="min-w-full text-left">
-              <thead>
-                <tr className="text-[#A3B8B0] border-b border-[#1A2323]">
-                  <th className="py-2 px-4 font-normal">Total Collateral</th>
-                  <th className="py-2 px-4 font-normal">Total Borrowed</th>
-                  <th className="py-2 px-4 font-normal">dUSD Minted</th>
-                </tr>
-              </thead>
-              <tbody>
-                {VAULT_METRICS.map((row, idx) => (
+        ) : data && (
+          <div className="space-y-6">
+            {/* Main Metrics Table */}
+            <div className="bg-[#0B1212] rounded-xl p-0 overflow-x-auto">
+              <table className="min-w-full text-left">
+                <thead>
+                  <tr className="text-[#A3B8B0] border-b border-[#1A2323]">
+                    <th className="py-2 px-4 font-normal">Total Collateral</th>
+                    <th className="py-2 px-4 font-normal">Total Borrowed</th>
+                    <th className="py-2 px-4 font-normal">dUSD Minted</th>
+                  </tr>
+                </thead>
+                <tbody>
                   <motion.tr
-                    key={idx}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: idx * 0.04 }}
+                    transition={{ duration: 0.3, delay: 0.04 }}
                     className="border-b border-[#1A2323]"
                   >
-                    <td className="py-2 px-4">{row.totalCollateral}</td>
-                    <td className="py-2 px-4">{row.totalBorrowed}</td>
-                    <td className="py-2 px-4">{row.dusdMinted}</td>
+                    <td className="py-2 px-4">{Number(data.totalCollateral).toFixed(3)} WHYPE</td>
+                    <td className="py-2 px-4">{Number(data.totalBorrowed).toFixed(3)} DUSD</td>
+                    <td className="py-2 px-4">{Number(data.dusdMinted).toFixed(3)} DUSD</td>
                   </motion.tr>
-                ))}
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Funds Allocation Table */}
+            <div className="bg-[#0B1212] rounded-xl p-0 overflow-x-auto">
+              <table className="min-w-full text-left">
+                <thead>
+                  <tr className="text-[#A3B8B0] border-b border-[#1A2323]">
+                    <th className="py-2 px-4 font-normal">Buffer Funds</th>
+                    <th className="py-2 px-4 font-normal">Executor Funds</th>
+                    <th className="py-2 px-4 font-normal">Current Round</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <motion.tr
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.08 }}
+                    className="border-b border-[#1A2323]"
+                  >
+                    <td className="py-2 px-4">{Number(data.bufferFunds).toFixed(3)} WHYPE</td>
+                    <td className="py-2 px-4">{Number(data.fundsForExecutor).toFixed(3)} WHYPE</td>
+                    <td className="py-2 px-4">#{data.currentRound}</td>
+                  </motion.tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Round Data Table */}
+            <div className="bg-[#0B1212] rounded-xl p-0 overflow-x-auto">
+              <table className="min-w-full text-left">
+                <thead>
+                  <tr className="text-[#A3B8B0] border-b border-[#1A2323]">
+                    <th className="py-2 px-4 font-normal">Withdrawal Requests</th>
+                    <th className="py-2 px-4 font-normal">Available Collateral</th>
+                    <th className="py-2 px-4 font-normal">Round Start</th>
+                    <th className="py-2 px-4 font-normal">Round End</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <motion.tr
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.12 }}
+                    className="border-b border-[#1A2323]"
+                  >
+                    <td className="py-2 px-4">{Number(data.roundData.totalWithdrawalRequests).toFixed(3)} WHYPE</td>
+                    <td className="py-2 px-4">{Number(data.roundData.availableCollateral).toFixed(3)} WHYPE</td>
+                    <td className="py-2 px-4">{formatDate(data.roundData.startTime)}</td>
+                    <td className="py-2 px-4">{formatDate(data.roundData.endTime)}</td>
+                  </motion.tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </main>

@@ -1,1427 +1,1943 @@
 export const DELPHO_VAULT_ABI = [
   {
-    type: "constructor",
-    inputs: [],
-    stateMutability: "nonpayable",
+    "type": "constructor",
+    "inputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "DEFAULT_ADMIN_ROLE",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "DEFAULT_ADMIN_ROLE",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "bytes32",
-        internalType: "bytes32",
-      },
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "FEE_PRECISION",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "FEE_PRECISION",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "KEEPER_ROLE",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "KEEPER_ROLE",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "bytes32",
-        internalType: "bytes32",
-      },
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "LIQUIDATOR_ROLE",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "LIQUIDATOR_ROLE",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "bytes32",
-        internalType: "bytes32",
-      },
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "SECONDS_IN_YEAR",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "SECONDS_IN_YEAR",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "UPGRADE_INTERFACE_VERSION",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "UPGRADE_INTERFACE_VERSION",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "string",
-        internalType: "string",
-      },
+        "name": "",
+        "type": "string",
+        "internalType": "string"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "USDT",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "USDT",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "WHYPE",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "WHYPE",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "borrowDUSD",
-    inputs: [
+    "type": "function",
+    "name": "borrowDUSD",
+    "inputs": [
       {
-        name: "collateralAmount",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "collateralAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [
+    "outputs": [
       {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "nonpayable",
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "borrowFeeBps",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "borrowFeeBps",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "calculateInterest",
-    inputs: [
+    "type": "function",
+    "name": "bufferBps",
+    "inputs": [],
+    "outputs": [
       {
-        name: "user",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [
-      {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
-    ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "delphoOracle",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "bufferFunds",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "address",
-        internalType: "contract IDelphoOracle",
-      },
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "deposit",
-    inputs: [
+    "type": "function",
+    "name": "calculateInterest",
+    "inputs": [
       {
-        name: "collateralAmount",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "dusdToken",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "claimWithdrawal",
+    "inputs": [
       {
-        name: "",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "view",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "feeReceiver",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "currentRound",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "getCurrentLTV",
-    inputs: [
+    "type": "function",
+    "name": "delphoOracle",
+    "inputs": [],
+    "outputs": [
       {
-        name: "user",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "",
+        "type": "address",
+        "internalType": "contract IDelphoOracle"
+      }
     ],
-    outputs: [
-      {
-        name: "currentLTV",
-        type: "uint256",
-        internalType: "uint256",
-      },
-    ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "getRoleAdmin",
-    inputs: [
+    "type": "function",
+    "name": "delphoStabilityPool",
+    "inputs": [],
+    "outputs": [
       {
-        name: "role",
-        type: "bytes32",
-        internalType: "bytes32",
-      },
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    outputs: [
-      {
-        name: "",
-        type: "bytes32",
-        internalType: "bytes32",
-      },
-    ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "getTotalDebt",
-    inputs: [
+    "type": "function",
+    "name": "deposit",
+    "inputs": [
       {
-        name: "user",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "collateralAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [
-      {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
-    ],
-    stateMutability: "view",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "getUnusedCollateral",
-    inputs: [
+    "type": "function",
+    "name": "dusdToken",
+    "inputs": [],
+    "outputs": [
       {
-        name: "user",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    outputs: [
-      {
-        name: "unusedCollateral",
-        type: "uint256",
-        internalType: "uint256",
-      },
-    ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "getUserInfo",
-    inputs: [
+    "type": "function",
+    "name": "executorBps",
+    "inputs": [],
+    "outputs": [
       {
-        name: "user",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "feeReceiver",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "tuple",
-        internalType: "struct IDelphoVault.UserInfo",
-        components: [
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "fundsForExecutor",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getAvailableBuffer",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getCurrentLTV",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "currentLTV",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getCurrentRoundEnd",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getFundsForExecutor",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getRoleAdmin",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getRoundWithdrawalInfo",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "totalRequested",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "available",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getTotalDebt",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getUnusedCollateral",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "unusedCollateral",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getUserInfo",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct IDelphoVault.UserInfo",
+        "components": [
           {
-            name: "borrower",
-            type: "address",
-            internalType: "address",
+            "name": "borrower",
+            "type": "address",
+            "internalType": "address"
           },
           {
-            name: "collateralAmount",
-            type: "uint256",
-            internalType: "uint256",
+            "name": "collateralAmount",
+            "type": "uint256",
+            "internalType": "uint256"
           },
           {
-            name: "borrowedAmount",
-            type: "uint256",
-            internalType: "uint256",
+            "name": "borrowedAmount",
+            "type": "uint256",
+            "internalType": "uint256"
           },
           {
-            name: "pendingInterest",
-            type: "uint256",
-            internalType: "uint256",
+            "name": "pendingInterest",
+            "type": "uint256",
+            "internalType": "uint256"
           },
           {
-            name: "lastUpdatedTimestamp",
-            type: "uint256",
-            internalType: "uint256",
+            "name": "lastUpdatedTimestamp",
+            "type": "uint256",
+            "internalType": "uint256"
           },
           {
-            name: "active",
-            type: "bool",
-            internalType: "bool",
-          },
-        ],
-      },
+            "name": "active",
+            "type": "bool",
+            "internalType": "bool"
+          }
+        ]
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "grantRole",
-    inputs: [
+    "type": "function",
+    "name": "getWithdrawalRequest",
+    "inputs": [
       {
-        name: "role",
-        type: "bytes32",
-        internalType: "bytes32",
-      },
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
       {
-        name: "account",
-        type: "address",
-        internalType: "address",
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
       },
+      {
+        "name": "",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "hasRole",
-    inputs: [
+    "type": "function",
+    "name": "getWithdrawalRequest",
+    "inputs": [
       {
-        name: "role",
-        type: "bytes32",
-        internalType: "bytes32",
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
       },
       {
-        name: "account",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "_currentRound",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
     ],
-    outputs: [
+    "outputs": [
       {
-        name: "",
-        type: "bool",
-        internalType: "bool",
-      },
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "hedgeExecutor",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "grantRole",
+    "inputs": [
       {
-        name: "",
-        type: "address",
-        internalType: "address",
+        "name": "role",
+        "type": "bytes32",
+        "internalType": "bytes32"
       },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    stateMutability: "view",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "hypeAssetAddress",
-    inputs: [
+    "type": "function",
+    "name": "hasRole",
+    "inputs": [
       {
-        name: "",
-        type: "address",
-        internalType: "address",
+        "name": "role",
+        "type": "bytes32",
+        "internalType": "bytes32"
       },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    outputs: [
+    "outputs": [
       {
-        name: "",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "hypeAssetKey",
-    inputs: [
+    "type": "function",
+    "name": "hedgeExecutor",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hypeAssetAddress",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    outputs: [
+    "outputs": [
       {
-        name: "",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "hypeToken",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "hypeAssetKey",
+    "inputs": [
       {
-        name: "",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hypeToken",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "initialize",
-    inputs: [
+    "type": "function",
+    "name": "initialize",
+    "inputs": [
       {
-        name: "_dusdToken",
-        type: "address",
-        internalType: "address",
+        "name": "_dusdToken",
+        "type": "address",
+        "internalType": "address"
       },
       {
-        name: "_collateralToken",
-        type: "address",
-        internalType: "address",
+        "name": "_collateralToken",
+        "type": "address",
+        "internalType": "address"
       },
       {
-        name: "_delphoOracle",
-        type: "address",
-        internalType: "address",
+        "name": "_delphoOracle",
+        "type": "address",
+        "internalType": "address"
       },
       {
-        name: "_owner",
-        type: "address",
-        internalType: "address",
+        "name": "_owner",
+        "type": "address",
+        "internalType": "address"
       },
       {
-        name: "_feeReceiver",
-        type: "address",
-        internalType: "address",
+        "name": "_feeReceiver",
+        "type": "address",
+        "internalType": "address"
       },
+      {
+        "name": "_delphoStabilityPool",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "keeper",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "keeper",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "liquidate",
-    inputs: [
-      {
-        name: "user",
-        type: "address",
-        internalType: "address",
-      },
-    ],
-    outputs: [
+    "type": "function",
+    "name": "liquidate",
+    "inputs": [
       {
-        name: "",
-        type: "int256",
-        internalType: "int256",
-      },
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    stateMutability: "nonpayable",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "liquidationThresholdBps",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "liquidationThresholdBps",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "maxLTVBps",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "maxLTVBps",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "maxWithdraw",
-    inputs: [
+    "type": "function",
+    "name": "maxWithdraw",
+    "inputs": [
       {
-        name: "user",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    outputs: [
+    "outputs": [
       {
-        name: "maxWithdrawableAmount",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "maxWithdrawableAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "mintDUSD",
-    inputs: [
+    "type": "function",
+    "name": "mintDUSD",
+    "inputs": [
       {
-        name: "dusdAmount",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "dusdAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [
+    "outputs": [
       {
-        name: "collateralAmount",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "collateralAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "nonpayable",
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "platformFeeBps",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "platformFeeBps",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "previewBorrow",
-    inputs: [
+    "type": "function",
+    "name": "previewBorrow",
+    "inputs": [
       {
-        name: "collateralAmount",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "collateralAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [
+    "outputs": [
       {
-        name: "borrowAmount",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "borrowAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "previewCollateralRequired",
-    inputs: [
+    "type": "function",
+    "name": "previewCollateralRequired",
+    "inputs": [
       {
-        name: "dusdAmount",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "dusdAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [
+    "outputs": [
       {
-        name: "collateralAmount",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "collateralAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "proxiableUUID",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "proxiableUUID",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "bytes32",
-        internalType: "bytes32",
-      },
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "renounceRole",
-    inputs: [
+    "type": "function",
+    "name": "renounceRole",
+    "inputs": [
       {
-        name: "role",
-        type: "bytes32",
-        internalType: "bytes32",
+        "name": "role",
+        "type": "bytes32",
+        "internalType": "bytes32"
       },
       {
-        name: "callerConfirmation",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "callerConfirmation",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "repayDUSD",
-    inputs: [
+    "type": "function",
+    "name": "repayDUSD",
+    "inputs": [
       {
-        name: "repayAmount",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "repayAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "repayFullLoan",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "repayWithCollateral",
+    "inputs": [
+      {
+        "name": "collateralAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [
+    "outputs": [
       {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "dusdAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "nonpayable",
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "repayFullLoan",
-    inputs: [],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "type": "function",
+    "name": "requestWithdrawal",
+    "inputs": [
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "repayWithCollateral",
-    inputs: [
+    "type": "function",
+    "name": "returnExecutorFunds",
+    "inputs": [
       {
-        name: "collateralAmount",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "returnFundsAdmin",
+    "inputs": [
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "revokeRole",
+    "inputs": [
       {
-        name: "dusdAmount",
-        type: "uint256",
-        internalType: "uint256",
+        "name": "role",
+        "type": "bytes32",
+        "internalType": "bytes32"
       },
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    stateMutability: "nonpayable",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "revokeRole",
-    inputs: [
+    "type": "function",
+    "name": "roundData",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "startTime",
+        "type": "uint48",
+        "internalType": "uint48"
+      },
       {
-        name: "role",
-        type: "bytes32",
-        internalType: "bytes32",
+        "name": "endTime",
+        "type": "uint48",
+        "internalType": "uint48"
       },
       {
-        name: "account",
-        type: "address",
-        internalType: "address",
+        "name": "totalWithdrawalRequests",
+        "type": "uint256",
+        "internalType": "uint256"
       },
+      {
+        "name": "availableCollateral",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "setBorrowFeeBps",
-    inputs: [
+    "type": "function",
+    "name": "roundDuration",
+    "inputs": [],
+    "outputs": [
       {
-        name: "_borrowFeeBps",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "setDelphoOracle",
-    inputs: [
+    "type": "function",
+    "name": "setBorrowFeeBps",
+    "inputs": [
       {
-        name: "_delphoOracle",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "_borrowFeeBps",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "setFeeReceiver",
-    inputs: [
+    "type": "function",
+    "name": "setBufferAllocation",
+    "inputs": [
       {
-        name: "_feeReceiver",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "_bufferBps",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "setHedgeExecutor",
-    inputs: [
+    "type": "function",
+    "name": "setDelphoOracle",
+    "inputs": [
       {
-        name: "_executor",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "_delphoOracle",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "setHypeAsset",
-    inputs: [
+    "type": "function",
+    "name": "setExecutorAllocation",
+    "inputs": [
       {
-        name: "asset",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "_executorBps",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setFeeReceiver",
+    "inputs": [
       {
-        name: "hypeAssetAddress_",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "_feeReceiver",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "setHypeAssetKey",
-    inputs: [
+    "type": "function",
+    "name": "setHedgeExecutor",
+    "inputs": [
       {
-        name: "asset",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "_executor",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setHypeAsset",
+    "inputs": [
       {
-        name: "hypeAssetKey_",
-        type: "address",
-        internalType: "address",
+        "name": "asset",
+        "type": "address",
+        "internalType": "address"
       },
+      {
+        "name": "hypeAssetAddress_",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "setLiquidationThresholdBps",
-    inputs: [
+    "type": "function",
+    "name": "setHypeAssetKey",
+    "inputs": [
       {
-        name: "_liquidationThresholdBps",
-        type: "uint256",
-        internalType: "uint256",
+        "name": "asset",
+        "type": "address",
+        "internalType": "address"
       },
+      {
+        "name": "hypeAssetKey_",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "setMaxLTVBps",
-    inputs: [
+    "type": "function",
+    "name": "setLiquidationThresholdBps",
+    "inputs": [
       {
-        name: "_maxLTVBps",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "_liquidationThresholdBps",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "setPlatformFeeBps",
-    inputs: [
+    "type": "function",
+    "name": "setMaxLTVBps",
+    "inputs": [
       {
-        name: "_platformFeeBps",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "_maxLTVBps",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "setWithdrawFeeEnable",
-    inputs: [
+    "type": "function",
+    "name": "setPlatformFeeBps",
+    "inputs": [
       {
-        name: "_enabled",
-        type: "bool",
-        internalType: "bool",
-      },
+        "name": "_platformFeeBps",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "supportsInterface",
-    inputs: [
+    "type": "function",
+    "name": "setRoundDuration",
+    "inputs": [
       {
-        name: "interfaceId",
-        type: "bytes4",
-        internalType: "bytes4",
-      },
+        "name": "_roundDuration",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
     ],
-    outputs: [
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setWithdrawFeeEnable",
+    "inputs": [
       {
-        name: "",
-        type: "bool",
-        internalType: "bool",
-      },
+        "name": "_enabled",
+        "type": "bool",
+        "internalType": "bool"
+      }
     ],
-    stateMutability: "view",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "totalBorrowed",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "setWithdrawalCutoff",
+    "inputs": [
       {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "_cutoff",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
     ],
-    stateMutability: "view",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "totalCollateral",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "setWithdrawalWaitRounds",
+    "inputs": [
       {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "_waitRounds",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
     ],
-    stateMutability: "view",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "function",
-    name: "upgradeToAndCall",
-    inputs: [
+    "type": "function",
+    "name": "supportsInterface",
+    "inputs": [
       {
-        name: "newImplementation",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "interfaceId",
+        "type": "bytes4",
+        "internalType": "bytes4"
+      }
+    ],
+    "outputs": [
       {
-        name: "data",
-        type: "bytes",
-        internalType: "bytes",
-      },
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
     ],
-    outputs: [],
-    stateMutability: "payable",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "userCurrentLoanId",
-    inputs: [
+    "type": "function",
+    "name": "totalBorrowed",
+    "inputs": [],
+    "outputs": [
       {
-        name: "user",
-        type: "address",
-        internalType: "address",
-      },
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "totalCollateral",
+    "inputs": [],
+    "outputs": [
       {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    stateMutability: "view",
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "withdraw",
-    inputs: [
+    "type": "function",
+    "name": "upgradeToAndCall",
+    "inputs": [
       {
-        name: "amount",
-        type: "uint256",
-        internalType: "uint256",
+        "name": "newImplementation",
+        "type": "address",
+        "internalType": "address"
       },
+      {
+        "name": "data",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "outputs": [],
+    "stateMutability": "payable"
   },
   {
-    type: "function",
-    name: "withdrawFeeEnabled",
-    inputs: [],
-    outputs: [
+    "type": "function",
+    "name": "userCurrentLoanId",
+    "inputs": [
       {
-        name: "",
-        type: "bool",
-        internalType: "bool",
-      },
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
     ],
-    stateMutability: "view",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
   },
   {
-    type: "function",
-    name: "withdrawWhype",
-    inputs: [
+    "type": "function",
+    "name": "withdraw",
+    "inputs": [
       {
-        name: "amount",
-        type: "uint256",
-        internalType: "uint256",
-      },
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    type: "event",
-    name: "CollateralAdded",
-    inputs: [
+    "type": "function",
+    "name": "withdrawFeeEnabled",
+    "inputs": [],
+    "outputs": [
       {
-        name: "user",
-        type: "address",
-        indexed: true,
-        internalType: "address",
-      },
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "withdrawWhype",
+    "inputs": [
       {
-        name: "amount",
-        type: "uint256",
-        indexed: false,
-        internalType: "uint256",
-      },
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "withdrawalRequestCutoff",
+    "inputs": [],
+    "outputs": [
       {
-        name: "totalCollateral",
-        type: "uint256",
-        indexed: false,
-        internalType: "uint256",
-      },
+        "name": "",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
     ],
-    anonymous: false,
+    "stateMutability": "view"
   },
   {
-    type: "event",
-    name: "CollateralWithdrawn",
-    inputs: [
+    "type": "function",
+    "name": "withdrawalRequests",
+    "inputs": [
       {
-        name: "user",
-        type: "address",
-        indexed: true,
-        internalType: "address",
+        "name": "",
+        "type": "address",
+        "internalType": "address"
       },
       {
-        name: "amount",
-        type: "uint256",
-        indexed: false,
-        internalType: "uint256",
-      },
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
     ],
-    anonymous: false,
+    "stateMutability": "view"
   },
   {
-    type: "event",
-    name: "Initialized",
-    inputs: [
+    "type": "function",
+    "name": "withdrawalWaitRounds",
+    "inputs": [],
+    "outputs": [
       {
-        name: "version",
-        type: "uint64",
-        indexed: false,
-        internalType: "uint64",
-      },
+        "name": "",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
     ],
-    anonymous: false,
+    "stateMutability": "view"
   },
   {
-    type: "event",
-    name: "InterestCalculated",
-    inputs: [
+    "type": "event",
+    "name": "CollateralAdded",
+    "inputs": [
       {
-        name: "user",
-        type: "address",
-        indexed: true,
-        internalType: "address",
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
       },
       {
-        name: "interest",
-        type: "uint256",
-        indexed: false,
-        internalType: "uint256",
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
       },
+      {
+        "name": "totalCollateral",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
     ],
-    anonymous: false,
+    "anonymous": false
   },
   {
-    type: "event",
-    name: "LoanLiquidated",
-    inputs: [
+    "type": "event",
+    "name": "CollateralWithdrawn",
+    "inputs": [
       {
-        name: "user",
-        type: "address",
-        indexed: true,
-        internalType: "address",
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
       },
       {
-        name: "borrowedAmount",
-        type: "uint256",
-        indexed: false,
-        internalType: "uint256",
-      },
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ExecutorFundsReturned",
+    "inputs": [
       {
-        name: "pnl",
-        type: "int256",
-        indexed: false,
-        internalType: "int256",
+        "name": "round",
+        "type": "uint48",
+        "indexed": true,
+        "internalType": "uint48"
       },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
     ],
-    anonymous: false,
+    "anonymous": false
   },
   {
-    type: "event",
-    name: "LoanRepaid",
-    inputs: [
+    "type": "event",
+    "name": "ExecutorWithdrawal",
+    "inputs": [
       {
-        name: "user",
-        type: "address",
-        indexed: true,
-        internalType: "address",
+        "name": "executor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
       },
       {
-        name: "repayAmount",
-        type: "uint256",
-        indexed: false,
-        internalType: "uint256",
-      },
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Initialized",
+    "inputs": [
+      {
+        "name": "version",
+        "type": "uint64",
+        "indexed": false,
+        "internalType": "uint64"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "InterestCalculated",
+    "inputs": [
       {
-        name: "interestPaid",
-        type: "uint256",
-        indexed: false,
-        internalType: "uint256",
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
       },
       {
-        name: "collateralReturned",
-        type: "uint256",
-        indexed: false,
-        internalType: "uint256",
+        "name": "interest",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "LoanLiquidated",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
       },
+      {
+        "name": "borrowedAmount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
     ],
-    anonymous: false,
+    "anonymous": false
   },
   {
-    type: "event",
-    name: "PositionFlagged",
-    inputs: [
+    "type": "event",
+    "name": "LoanRepaid",
+    "inputs": [
       {
-        name: "user",
-        type: "address",
-        indexed: true,
-        internalType: "address",
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
       },
       {
-        name: "collateralAmount",
-        type: "uint256",
-        indexed: false,
-        internalType: "uint256",
+        "name": "repayAmount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
       },
+      {
+        "name": "interestPaid",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
     ],
-    anonymous: false,
+    "anonymous": false
   },
   {
-    type: "event",
-    name: "RoleAdminChanged",
-    inputs: [
+    "type": "event",
+    "name": "PositionFlagged",
+    "inputs": [
       {
-        name: "role",
-        type: "bytes32",
-        indexed: true,
-        internalType: "bytes32",
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
       },
       {
-        name: "previousAdminRole",
-        type: "bytes32",
-        indexed: true,
-        internalType: "bytes32",
+        "name": "collateralAmount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoleAdminChanged",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
       },
       {
-        name: "newAdminRole",
-        type: "bytes32",
-        indexed: true,
-        internalType: "bytes32",
+        "name": "previousAdminRole",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
       },
+      {
+        "name": "newAdminRole",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
     ],
-    anonymous: false,
+    "anonymous": false
   },
   {
-    type: "event",
-    name: "RoleGranted",
-    inputs: [
+    "type": "event",
+    "name": "RoleGranted",
+    "inputs": [
       {
-        name: "role",
-        type: "bytes32",
-        indexed: true,
-        internalType: "bytes32",
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
       },
       {
-        name: "account",
-        type: "address",
-        indexed: true,
-        internalType: "address",
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
       },
       {
-        name: "sender",
-        type: "address",
-        indexed: true,
-        internalType: "address",
-      },
+        "name": "sender",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
     ],
-    anonymous: false,
+    "anonymous": false
   },
   {
-    type: "event",
-    name: "RoleRevoked",
-    inputs: [
+    "type": "event",
+    "name": "RoleRevoked",
+    "inputs": [
       {
-        name: "role",
-        type: "bytes32",
-        indexed: true,
-        internalType: "bytes32",
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
       },
       {
-        name: "account",
-        type: "address",
-        indexed: true,
-        internalType: "address",
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
       },
       {
-        name: "sender",
-        type: "address",
-        indexed: true,
-        internalType: "address",
-      },
+        "name": "sender",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
     ],
-    anonymous: false,
+    "anonymous": false
   },
   {
-    type: "event",
-    name: "TokensBorrowed",
-    inputs: [
+    "type": "event",
+    "name": "RoundAdvanced",
+    "inputs": [
       {
-        name: "user",
-        type: "address",
-        indexed: true,
-        internalType: "address",
+        "name": "round",
+        "type": "uint48",
+        "indexed": true,
+        "internalType": "uint48"
       },
       {
-        name: "collateralAmount",
-        type: "uint256",
-        indexed: false,
-        internalType: "uint256",
+        "name": "startTime",
+        "type": "uint48",
+        "indexed": false,
+        "internalType": "uint48"
       },
       {
-        name: "borrowAmount",
-        type: "uint256",
-        indexed: false,
-        internalType: "uint256",
-      },
+        "name": "endTime",
+        "type": "uint48",
+        "indexed": false,
+        "internalType": "uint48"
+      }
     ],
-    anonymous: false,
+    "anonymous": false
   },
   {
-    type: "event",
-    name: "Upgraded",
-    inputs: [
+    "type": "event",
+    "name": "TokensBorrowed",
+    "inputs": [
       {
-        name: "implementation",
-        type: "address",
-        indexed: true,
-        internalType: "address",
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
       },
+      {
+        "name": "collateralAmount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "borrowAmount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
     ],
-    anonymous: false,
+    "anonymous": false
   },
   {
-    type: "event",
-    name: "WithdrawFeeEnabled",
-    inputs: [
+    "type": "event",
+    "name": "Upgraded",
+    "inputs": [
       {
-        name: "enabled",
-        type: "bool",
-        indexed: false,
-        internalType: "bool",
-      },
+        "name": "implementation",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
     ],
-    anonymous: false,
+    "anonymous": false
   },
   {
-    type: "error",
-    name: "AccessControlBadConfirmation",
-    inputs: [],
+    "type": "event",
+    "name": "WithdrawFeeEnabled",
+    "inputs": [
+      {
+        "name": "enabled",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
   },
   {
-    type: "error",
-    name: "AccessControlUnauthorizedAccount",
-    inputs: [
+    "type": "event",
+    "name": "WithdrawalExecuted",
+    "inputs": [
       {
-        name: "account",
-        type: "address",
-        internalType: "address",
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
       },
       {
-        name: "neededRole",
-        type: "bytes32",
-        internalType: "bytes32",
+        "name": "round",
+        "type": "uint48",
+        "indexed": true,
+        "internalType": "uint48"
       },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
     ],
+    "anonymous": false
   },
   {
-    type: "error",
-    name: "AddressEmptyCode",
-    inputs: [
+    "type": "event",
+    "name": "WithdrawalRequested",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
       {
-        name: "target",
-        type: "address",
-        internalType: "address",
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
       },
+      {
+        "name": "targetRound",
+        "type": "uint48",
+        "indexed": true,
+        "internalType": "uint48"
+      }
     ],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "AccessControlBadConfirmation",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "AccessControlUnauthorizedAccount",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "neededRole",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
   },
   {
-    type: "error",
-    name: "DV_InsufficientCollateral",
-    inputs: [],
+    "type": "error",
+    "name": "AddressEmptyCode",
+    "inputs": [
+      {
+        "name": "target",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
   },
   {
-    type: "error",
-    name: "DV_InvalidAddress",
-    inputs: [],
+    "type": "error",
+    "name": "DV_AmountExceedsBuffer",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "DV_InvalidAmount",
-    inputs: [],
+    "type": "error",
+    "name": "DV_InsufficientCollateral",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "DV_InvalidBorrowAmount",
-    inputs: [],
+    "type": "error",
+    "name": "DV_InsufficientExecutorFunds",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "DV_InvalidLoanId",
-    inputs: [],
+    "type": "error",
+    "name": "DV_InvalidAddress",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "DV_LTVExceeded",
-    inputs: [],
+    "type": "error",
+    "name": "DV_InvalidAmount",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "DV_NoActiveLoan",
-    inputs: [],
+    "type": "error",
+    "name": "DV_InvalidBorrowAmount",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "DV_NoDebtToRepay",
-    inputs: [],
+    "type": "error",
+    "name": "DV_InvalidLoanId",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "DV_Only_Executor",
-    inputs: [],
+    "type": "error",
+    "name": "DV_InvalidRound",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "DV_PositionAlreadyFlagged",
-    inputs: [],
+    "type": "error",
+    "name": "DV_LTVExceeded",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "DV_PositionFlagged",
-    inputs: [],
+    "type": "error",
+    "name": "DV_NoActiveLoan",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "DV_PositionNotFlagged",
-    inputs: [],
+    "type": "error",
+    "name": "DV_NoDebtToRepay",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "DV_PositionNotLiquidatable",
-    inputs: [],
+    "type": "error",
+    "name": "DV_NotEnoughCollateral",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "DV_TransferFailed",
-    inputs: [],
+    "type": "error",
+    "name": "DV_OnlyExecutor",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "ERC1967InvalidImplementation",
-    inputs: [
-      {
-        name: "implementation",
-        type: "address",
-        internalType: "address",
-      },
-    ],
+    "type": "error",
+    "name": "DV_Only_Executor",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "ERC1967NonPayable",
-    inputs: [],
+    "type": "error",
+    "name": "DV_PositionAlreadyFlagged",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "FailedCall",
-    inputs: [],
+    "type": "error",
+    "name": "DV_PositionFlagged",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "InvalidInitialization",
-    inputs: [],
+    "type": "error",
+    "name": "DV_PositionNotFlagged",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "NotInitializing",
-    inputs: [],
+    "type": "error",
+    "name": "DV_PositionNotLiquidatable",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "ReentrancyGuardReentrantCall",
-    inputs: [],
+    "type": "error",
+    "name": "DV_TransferFailed",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "SafeERC20FailedOperation",
-    inputs: [
+    "type": "error",
+    "name": "ERC1967InvalidImplementation",
+    "inputs": [
       {
-        name: "token",
-        type: "address",
-        internalType: "address",
-      },
-    ],
+        "name": "implementation",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ERC1967NonPayable",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "UUPSUnauthorizedCallContext",
-    inputs: [],
+    "type": "error",
+    "name": "FailedCall",
+    "inputs": []
   },
   {
-    type: "error",
-    name: "UUPSUnsupportedProxiableUUID",
-    inputs: [
+    "type": "error",
+    "name": "InvalidInitialization",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotInitializing",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ReentrancyGuardReentrantCall",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "SafeERC20FailedOperation",
+    "inputs": [
       {
-        name: "slot",
-        type: "bytes32",
-        internalType: "bytes32",
-      },
-    ],
+        "name": "token",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "UUPSUnauthorizedCallContext",
+    "inputs": []
   },
-];
+  {
+    "type": "error",
+    "name": "UUPSUnsupportedProxiableUUID",
+    "inputs": [
+      {
+        "name": "slot",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  }
+]
 
 export const HYPERLEND_ABI = [
   {
@@ -2114,6 +2630,19 @@ export const EXECUTOR_ABI = [
   },
   {
     "type": "function",
+    "name": "ACTION_ID_SPOT_SEND",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint24",
+        "internalType": "uint24"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "CORE_WRITER_ADDRESS",
     "inputs": [],
     "outputs": [
@@ -2231,6 +2760,19 @@ export const EXECUTOR_ABI = [
   },
   {
     "type": "function",
+    "name": "USDT_TOKEN",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint64",
+        "internalType": "uint64"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "WHYPE",
     "inputs": [],
     "outputs": [
@@ -2241,6 +2783,24 @@ export const EXECUTOR_ABI = [
       }
     ],
     "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "addApiWallet",
+    "inputs": [
+      {
+        "name": "apiWallet",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "apiWalletName",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -2294,6 +2854,13 @@ export const EXECUTOR_ABI = [
         "internalType": "uint256"
       }
     ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "closeFullLoopPosition",
+    "inputs": [],
     "outputs": [],
     "stateMutability": "nonpayable"
   },
@@ -2357,6 +2924,13 @@ export const EXECUTOR_ABI = [
   {
     "type": "function",
     "name": "executeFullEvmFlow",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "executeFullEvmFlow",
     "inputs": [
       {
         "name": "minAmountOut",
@@ -2374,6 +2948,13 @@ export const EXECUTOR_ABI = [
         "internalType": "uint256"
       }
     ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "executeFullEvmFlowNew",
+    "inputs": [],
     "outputs": [],
     "stateMutability": "nonpayable"
   },
@@ -2633,6 +3214,19 @@ export const EXECUTOR_ABI = [
   },
   {
     "type": "function",
+    "name": "setDelphoVault",
+    "inputs": [
+      {
+        "name": "_delphoVault",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "setHyperLoop",
     "inputs": [
       {
@@ -2751,6 +3345,19 @@ export const EXECUTOR_ABI = [
         "name": "",
         "type": "uint256",
         "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "transferUSDTToHyperEVM",
+    "inputs": [
+      {
+        "name": "weiAmount",
+        "type": "uint64",
+        "internalType": "uint64"
       }
     ],
     "outputs": [],
@@ -3007,4 +3614,4 @@ export const EXECUTOR_ABI = [
       }
     ]
   }
-];
+]
