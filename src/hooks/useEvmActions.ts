@@ -25,13 +25,13 @@ export function useEvmActions() {
     // );
 
     // targetLoopValue could be user input (e.g., 150 USDT)
-    const targetLoopValue = 150_000_000n;
+
 
     const tx = await walletClient.writeContract({
       address: EXECUTOR_ADDRESS,
       abi: EXECUTOR_ABI,
-      functionName: "executeFullEvmFlow",
-      args: [1, 1, targetLoopValue],
+      functionName: "executeFullEvmFlowNew",
+      args: [],
       account: address,
     });
 
